@@ -1,0 +1,47 @@
+{
+    "latex-workshop.latex.outputDir": "./tex-output",
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-output-directory=tex-output",
+                "-aux-directory=tex-output",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-aux-directory=tex-output",
+                "-output-directory=tex-output",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+    ],
+    "cSpell.words": [
+        "ANNs",
+        "Agrawal",
+        "Mailloux",
+        "SVMs",
+        "Shelopugin",
+        "Sweta",
+        "YRBSS"
+    ],
+    "latex-workshop.latex.outDir": "./tex-output"
+}
