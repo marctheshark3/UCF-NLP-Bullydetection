@@ -9,7 +9,13 @@ NLP Project 2019
 #### Personal Attacks - 3
 
 #### Rolando will take first 1/3 of data - 1-2939
-Next up: 2001
+Next up: 2123
+Some tweets were inexplicably split up in multiple lines. Folding them into one
+line shifted Maxim's starting point. Maxim's first change now sits at line
+2957 . Given that it doesn't look like he had to collapse any tweets, and his
+first change occurred at line 2978 prior to me collapsing tweets, that suggests
+a current shift of -21 lines. So I assume Maxim's block starts at what is now
+line 2919.
 #### Maxim will take 2nd 1/3 of data     - 2940 - 5879
 #### Marc will take 3rd 1/3 of data      - 5880 - 8818
 
