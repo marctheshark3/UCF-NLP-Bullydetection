@@ -9,7 +9,7 @@ NLP Project 2019
 #### Personal Attacks - 3
 
 #### Rolando will take first 1/3 of data - 1-2939
-Next up: 1001
+Next up: 2001
 #### Maxim will take 2nd 1/3 of data     - 2940 - 5879
 #### Marc will take 3rd 1/3 of data      - 5880 - 8818
 
