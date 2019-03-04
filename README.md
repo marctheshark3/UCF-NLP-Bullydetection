@@ -44,9 +44,19 @@ the requirements present in the repository's `requirements.txt` file:
     ...
     $ . ~/pythonenv/CAP6640_PROJ/bin/activate
     (CAP6640_PROJ)$ python3 -m pip install -r requirements.txt
+    ...
+    (CAP6640_PROJ)$ python3 devtools/dataset_stats.py
 
 #### Project proposal			[]
+
+The proposal, as submitted, is included in the project as the `proposal.tex`
+and `proposal.bib` files. Typesetting with LaTeX requires the files
+`acmcopyright.sty` and `sig-alternate-05-2015.cls`.
+
 #### Text tokenization			Feb 24 []
+
+The *NLTK* library has been added to the list of requirements for the project.
+
 #### Text processing			Mar 1 []
 #### Classifier				Mar 15 []
 #### Hyperparameter tuning		Mar 22 []
