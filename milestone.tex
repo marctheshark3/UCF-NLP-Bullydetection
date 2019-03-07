@@ -113,17 +113,11 @@ features used in this proof-of-concept are:
   \item Ready-made constructs for:
   \begin{itemize}
     \item Artificial Neuron Networks (ANN)
-    \item Recurrent Neural Networks (RNN)
-    \item Long Short Term Memory (LSTM) RNN cells
     \item Linear and Radial Basis Function-based Support Vector Machines (SVM)
   \end{itemize}
   \item High performance parallel computing leveraging Graphical Processing
   Unit (GPU) capabilities
 \end{itemize}
-
-A good tutorial the team used in order to learn application of \textit{RNN} and
-\textit{LSTM} using \textit{TensorFlow}, specifically in the area of sentiment
-analysis, is that as offered by Chablani \cite{chablani-2017}.
 
 The design decision (as documented in Section \ref{sec:design}) regarding the
 use of Comma Separated Value (CSV)-formatted files as primary input/output led
@@ -171,13 +165,11 @@ item):
   \item \textbf{Classification and Evaluation:} Train a classifier to predict
   labels for each of the samples in the data set, compare said predictions to
   the actual data set labels, and produce metrics describing the classification
-  performance (see Section \ref{subsec:classification}). Four independent
+  performance (see Section \ref{subsec:classification}). Three independent
   classifiers are used within this task:
   \begin{itemize}
     \item ANN classification - A three-layer (one input, one hidden, and
     one output) Artificial Neuron Network (ANN).
-    \item RNN/LSTM classification - A single-layer Recurrent Neural
-    Network (RNN) with Long Short Term Memory (LSTM) cells.
     \item SVM classification - A Radial Basis Function (RBF) Support Vector
     Machine.
     \item Bayes classification - A Na\"{i}ve Bayes classifier.
@@ -444,15 +436,10 @@ point of contact, follows:
   the most flexible of classifiers, both in the form of input they accept as
   well as the output they produce. The point of contact for this classifier is
   \textbf{Mr. Rolando Nieves}.
-  \item Long Short Term Memory (LSTM) Recurrent Neural Network (RNN) - Combining
-  the input size flexibility of \textit{RNN} along with the memory mechanics of
-  \textit{LSTM} cells yields a sentiment analysis classifier that leverages
-  more sophisticated advances in Natural Language Processing. The point of
-  contact for this classifier is \textbf{Mr. Rolando Nieves}.
   \item Support Vector Machines (SVM) - SVMs have the possibility of requiring
   the least amount of computing power during both training (as compared with
   ANNs) and classification. The point of contact for this classifier will be
-  \textbf{Mr. Marc Mailloux}.
+  \textbf{Mr. Maxim Shelopugin}.
   \item Na\"{i}ve Bayes - This was the classifier used in the \textit{Anti-Bully}
   system this proof-of-concept will be based on. It will be interesting to
   assess the impact, if any, of implementing the same classifier on a
