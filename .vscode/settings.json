@@ -36,11 +36,16 @@
     "cSpell.words": [
         "ANNs",
         "Agrawal",
+        "Brownlee",
+        "Chablani",
+        "LSTM",
         "Mailloux",
+        "NLTK",
         "SVMs",
         "Shelopugin",
         "Sweta",
-        "YRBSS"
+        "YRBSS",
+        "posteriori"
     ],
     "latex-workshop.latex.outDir": "./tex-output",
     "python.pythonPath": "/Users/rjnieves/pythonenv/CAP6640_PROJ/bin/python"

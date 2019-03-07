@@ -1,17 +1,14 @@
-# UCF NLP Course
-NLP Project 2019
-
+# UCF NLP Course; NLP Project 2019
 
 ## Classifying Label
 
-#### Cultural Harassment - 1 
-#### Sexual Harassment - 2
-#### Personal Attacks - 3
+#### Cultural Harassment	1 
+#### Sexual Harassment		2
+#### Personal Attacks		3
 
-#### Rolando will take first 1/3 of data - 1-2939
-Finished labeling
+## Labeling is done 
 
-
+#### Notes:
 Some tweets were inexplicably split up in multiple lines. Folding them into one
 line shifted Maxim's starting point. Maxim's first change now sits at line
 2957 . Given that it doesn't look like he had to collapse any tweets, and his
@@ -19,13 +16,9 @@ first change occurred at line 2978 prior to me collapsing tweets, that suggests
 a current shift of -21 lines. So I assume Maxim's block starts at what is now
 line 2919.
 
-#### Maxim will take 2nd 1/3 of data     - 2940 - 5879
-#### Marc will take 3rd 1/3 of data      - 5880 - 8818
-
 ## Plan of Attack & Dates:
-#### Data collection 			Feb 10  [check]
-
-#### Data labeling into 3 categories	Feb 17 []
+#### Data collection 					Feb 10  	[V]
+#### Data labeling into 3 categories	Feb 17		[V]
 
 Data label distribution as of 28 February 2019
 
@@ -47,18 +40,34 @@ the requirements present in the repository's `requirements.txt` file:
     ...
     (CAP6640_PROJ)$ python3 devtools/dataset_stats.py
 
-#### Project proposal			[]
+#### Project proposal					End of Feb 	[V]
 
 The proposal, as submitted, is included in the project as the `proposal.tex`
 and `proposal.bib` files. Typesetting with LaTeX requires the files
 `acmcopyright.sty` and `sig-alternate-05-2015.cls`.
 
-#### Text tokenization			Feb 24 []
+#### Text tokenization					Mar 5 		[V]
 
 The *NLTK* library has been added to the list of requirements for the project.
 
-#### Text processing			Mar 1 []
-#### Classifier				Mar 15 []
-#### Hyperparameter tuning		Mar 22 []
-#### Presentation				-- []
-#### Final report (?) []
+#### Data addition						Mar 10 		[]
+	Some "great" resources:
+		https://www.reddit.com/r/The_Donald/hot/	- cultural (it is hard to find cultural attacks in general, people tend to be very sensitive to these, so they are most likely banned)
+		https://www.reddit.com/r/RoastMe/			- goldmine for personal attacks
+
+		Below are sexual sources, please be cautios when opening, these are not safe to watch in public.
+		https://www.reddit.com/r/dirtypenpals/top/?t=all
+		https://www.reddit.com/r/gonewildaudio		
+
+
+#### Text processing					Mar 10 		[]
+#### Classifier							Mar 15 		[]
+	SVM
+	BAYES
+	LSTM
+	(?) cnn
+	(?) n-gram
+	(?) rnn
+#### Hyperparameter tuning				Mar 22 		[]
+#### Presentation						-- 			[]
+#### Final report 						(?) 		[]
