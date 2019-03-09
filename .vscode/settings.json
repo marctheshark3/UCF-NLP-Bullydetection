@@ -48,5 +48,6 @@
         "posteriori"
     ],
     "latex-workshop.latex.outDir": "./tex-output",
-    "python.pythonPath": "/Users/rjnieves/pythonenv/CAP6640_PROJ/bin/python"
+    "python.venvPath": "~/pythonenv",
+    "python.pythonPath": "~/pythonenv/CAP6640_PROJ/bin/python"
 }
