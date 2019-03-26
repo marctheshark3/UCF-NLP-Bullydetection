@@ -31,7 +31,6 @@ def preprocessing(your_data):
     for i in range(1,len(data)):
         index = data[i]
 
-
         #reverse looping through each index to find the label 0,1,2,3
         for j in reversed(range(len(index))):
             single_index = index[j]
@@ -40,7 +39,6 @@ def preprocessing(your_data):
                 #if the single_index is 0,1,2,3 lets store it
                 if any(char.isdigit() for char in single_index):
                     sentiment.append(int(single_index))
-
                     #stop this from looping through the rest of the index
                     #since we know we got our label
                     break
