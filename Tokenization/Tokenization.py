@@ -9,16 +9,14 @@ start = time.time()
 
 
 #change your file location resprective of your path
-file_location = "/Users/marctheshark/Documents/NLP/Final Project/data.txt"
+file_location = "/Users/marctheshark/Documents/Github/NLP/Tokenization/data.txt"
 
 #opening and then closing the file
 def getfile(address):
 
-    file = open(address, 'rt')
-    data = file.readlines()
-    file.close()
+    file = pd.read_csv(address)
 
-    return data
+    return file
 
 #Looping through the data to pull each sentence and sentiment label
 def preprocessing(your_data):
@@ -28,26 +26,13 @@ def preprocessing(your_data):
     corpus = []
 
     #looping over the length of the data
-    for i in range(1,len(data)):
-        index = data[i]
+    for i in range(1,data.shape[0]):
 
-        #reverse looping through each index to find the label 0,1,2,3
-        for j in reversed(range(len(index))):
-            single_index = index[j]
-
-            try:
-                #if the single_index is 0,1,2,3 lets store it
-                if any(char.isdigit() for char in single_index):
-                    sentiment.append(int(single_index))
-                    #stop this from looping through the rest of the index
-                    #since we know we got our label
-                    break
-
-            except ValueError:
-                w = 0
+        tweet = data.iloc[i][0]
+        label = data.iloc[i][1]
 
         #Building sentences from the data and removing punctuation and lowering captilizations.
-        words = word_tokenize(index)
+        words = word_tokenize(tweet)
         words = [word.lower() for word in words]
 
         # removing any punctuation
@@ -57,8 +42,9 @@ def preprocessing(your_data):
         sw = set(stopwords.words('english'))
         filter_words = [w for w in filter_words if not w in sw]
         corpus.append(filter_words)
+        sentiment.append(label)
         #somehow the labels and corpus is off, easily fixable
-    return sentiment, corpus
+    return sentiment , corpus
 x,y = (preprocessing(file_location))
 
 print(len(x))
