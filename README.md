@@ -24,10 +24,10 @@ Data label distribution as of 28 February 2019
 
 | Label | Raw Count | Percentage |
 | :---  |      ---: |       ---: |
-| Non-Bullying | 7,649 | 86.8% |
-| Cultural | 559 | 6.3% |
-| Sexual | 165 | 1.9% |
-| Personal | 444 | 5.0% |
+| Non-Bullying | 7,203 | 81.7% |
+| Cultural | 260 | 2.9% |
+| Sexual | 264 | 3.0% |
+| Personal | 1090 | 12.4% |
 
 Data produced using the `dataset_stats.py` script in the `devtools` directory.
 The Python program was ran under a 'virtualenv' built using
