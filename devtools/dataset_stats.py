@@ -8,7 +8,7 @@ LABELS_AS_TXT = [
     'Personal'
 ]
 
-data_frame = pd.read_csv('Data/new_data.csv')
+data_frame = pd.read_csv('../Data/new_data.csv')
 labels, label_counts = np.unique(np.array(data_frame['label']), return_counts=True)
 labels = list(map(lambda lab_num: LABELS_AS_TXT[lab_num], labels))
 label_pcts = (label_counts / data_frame.shape[0]) * 100.0
