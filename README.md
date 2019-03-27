@@ -20,14 +20,12 @@ line 2919.
 #### Data collection 					Feb 10  	[V]
 #### Data labeling into 3 categories	Feb 17		[V]
 
-Data label distribution as of 28 February 2019
-
 | Label | Raw Count | Percentage |
 | :---  |      ---: |       ---: |
-| Non-Bullying | 7,649 | 86.8% |
-| Cultural | 559 | 6.3% |
-| Sexual | 165 | 1.9% |
-| Personal | 444 | 5.0% |
+| Non-Bullying | 7,203 | 81.7% |
+| Cultural | 260 | 2.9% |
+| Sexual | 264 | 3.0% |
+| Personal | 1090 | 12.4% |
 
 Data produced using the `dataset_stats.py` script in the `devtools` directory.
 The Python program was ran under a 'virtualenv' built using
@@ -50,24 +48,11 @@ and `proposal.bib` files. Typesetting with LaTeX requires the files
 
 The *NLTK* library has been added to the list of requirements for the project.
 
-#### Data addition						Mar 10 		[]
-	Some "great" resources:
-		https://www.reddit.com/r/The_Donald/hot/	- cultural (it is hard to find cultural attacks in general, people tend to be very sensitive to these, so they are most likely banned)
-		https://www.reddit.com/r/RoastMe/			- goldmine for personal attacks
-
-		Below are sexual sources, please be cautios when opening, these are not safe to watch in public.
-		https://www.reddit.com/r/dirtypenpals/top/?t=all
-		https://www.reddit.com/r/gonewildaudio		
-
-
-#### Text processing					Mar 10 		[]
-#### Classifier							Mar 15 		[]
+#### Text processing					Mar 10 		[V]
+#### Classifier							Apr 5		[:)]
 	SVM
 	BAYES
-	LSTM
-	(?) cnn
-	(?) n-gram
-	(?) rnn
-#### Hyperparameter tuning				Mar 22 		[]
-#### Presentation						-- 			[]
-#### Final report 						(?) 		[]
+	ANN
+#### Hyperparameter tuning				Apr 10 		[]
+#### Presentation					Apr 15 			[]
+#### Final report 						 		[]
