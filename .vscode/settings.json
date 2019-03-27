@@ -45,6 +45,9 @@
         "Shelopugin",
         "Sweta",
         "YRBSS",
+        "hstack",
+        "ngram",
+        "numpy",
         "posteriori"
     ],
     "latex-workshop.latex.outDir": "./tex-output",
