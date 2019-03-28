@@ -13,8 +13,37 @@ def find_n_grams(tweet_list, n_gram_size):
   :return: list()-like object containing all unique n-grams found, sorted
            alphabetically.
   """
-  # NOTE: Assuming 500 unique n-grams just to make the overall logic flow. 500 has no real significance.
-  return ['{:d}-gram'.format(n_gram_size) for _ in range(500)] # TODO: Replace this statement with the real logic
+
+  unique_ngram = []
+
+  # looking through each sentence in the corpus
+  for i in range(len(tweet_list)):
+
+    sentences = tweet_list[i]
+    sentence_ngram = []
+    # print(sentences)
+
+    # looking at each word of the sentence
+    for word in range(len(sentences)):
+      # storing the ngram
+      ngram = sentences[word:word + n_gram_size]
+
+    # storing all ngrams in their respective sentences
+
+      # if there are unequal ngrams dont use them
+      try:
+       if len(ngram) < n_gram_size:
+        # print('breaking')
+        pass
+
+      except:
+        if ngram not in sentence_ngram:
+          sentence_ngram.append(ngram)
+
+    unique_ngram.append(sentence_ngram)
+  unique_ngram.sort()
+
+  return unique_ngram
 
 def isolated_encode(tweet_list, n_gram_list):
   """
@@ -30,7 +59,17 @@ def isolated_encode(tweet_list, n_gram_list):
   :return: NumPy 2-dimensional array containing the isolated tweet feature
            representation.
   """
-  return np.zeros([len(tweet_list), len(n_gram_list)]) # TODO: Replace this statement with the real logic
+
+  encoded_data = np.zeros([len(tweet_list), len(n_gram_list)])
+  count = 0
+  for z in range(len(n_gram_list)):
+    unique_token = n_gram_list[z]
+    for e in range(len(tweet_list)):
+      if unique_token in tweet_list[e]:
+        count += 1
+        encoded_data[e, z] = count
+
+  return encoded_data
 
 def encode_tweets(tweet_list, n_gram_size_list):
   """
