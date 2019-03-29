@@ -1,6 +1,7 @@
 import numpy as np
 
 
+
 def find_n_grams(tweet_list, n_gram_size):
   """
   Iterate over every tweet in `tweet_list`, identifying the unique n-grams (of
@@ -14,36 +15,21 @@ def find_n_grams(tweet_list, n_gram_size):
            alphabetically.
   """
 
-  unique_ngram = []
+  book_end = ['#' for _ in range(n_gram_size)]
+  n_gram_set = set()
 
-  # looking through each sentence in the corpus
-  for i in range(len(tweet_list)):
+  for a_line in tweet_list:
+    sentence = tweet_list[a_line]
 
-    sentences = tweet_list[i]
-    sentence_ngram = []
-    # print(sentences)
+    line_words =sentence.split(' ')
+    word_count = len(line_words)
+    line_words = book_end + line_words + book_end
 
-    # looking at each word of the sentence
-    for word in range(len(sentences)):
-      # storing the ngram
-      ngram = sentences[word:word + n_gram_size]
+    for word_index in range(word_count + n_gram_size):
+      n_gram_set.add(''.join(line_words[word_index:word_index+n_gram_size]))
 
-    # storing all ngrams in their respective sentences
 
-      # if there are unequal ngrams dont use them
-      try:
-       if len(ngram) < n_gram_size:
-        # print('breaking')
-        pass
-
-      except:
-        if ngram not in sentence_ngram:
-          sentence_ngram.append(ngram)
-
-    unique_ngram.append(sentence_ngram)
-  unique_ngram.sort()
-
-  return unique_ngram
+  return sorted(n_gram_set)
 
 def isolated_encode(tweet_list, n_gram_list):
   """
