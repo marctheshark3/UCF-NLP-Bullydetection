@@ -1,3 +1,5 @@
+import sys
+from datetime import datetime
 import numpy as np
 
 
@@ -18,15 +20,14 @@ def find_n_grams(tweet_list, n_gram_size):
   book_end = ['#' for _ in range(n_gram_size)]
   n_gram_set = set()
 
+  # 'a_line' is not an index, it is an actual tweet.
   for a_line in tweet_list:
-    sentence = tweet_list[a_line]
-
-    line_words =sentence.split(' ')
+    line_words = a_line.split(' ')
     word_count = len(line_words)
     line_words = book_end + line_words + book_end
 
     for word_index in range(word_count + n_gram_size):
-      n_gram_set.add(''.join(line_words[word_index:word_index+n_gram_size]))
+      n_gram_set.add(' '.join(line_words[word_index:word_index+n_gram_size]))
 
 
   return sorted(n_gram_set)
@@ -47,14 +48,19 @@ def isolated_encode(tweet_list, n_gram_list):
   """
 
   encoded_data = np.zeros([len(tweet_list), len(n_gram_list)])
+  n_gram_size = len(n_gram_list[0].split(' '))
   count = 0
-  for z in range(len(n_gram_list)):
+  n_gram_count = len(n_gram_list)
+  print('Starting {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
+  for z in range(n_gram_count):
     unique_token = n_gram_list[z]
     for e in range(len(tweet_list)):
       if unique_token in tweet_list[e]:
         count += 1
         encoded_data[e, z] = count
-
+    print('{:5d}/{:5d}\r'.format(z, n_gram_count), end='')
+    sys.stdout.flush()
+  print('\nDone with {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
   return encoded_data
 
 def encode_tweets(tweet_list, n_gram_size_list):

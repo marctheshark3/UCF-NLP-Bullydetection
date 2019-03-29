@@ -3,6 +3,7 @@
 """Module containing the facilities that translate an entire data set file."""
 
 import pandas as pd
+import numpy as np
 
 from . import replace_emojis
 from . import tokenize_string
@@ -18,7 +19,11 @@ def transform_tweet(source_tweet):
   """
   no_emojis = replace_emojis(source_tweet)
   as_tokens = tokenize_string(no_emojis)
-  return ' '.join(as_tokens)
+  result = ' '.join(as_tokens)
+  if not result:
+    return pd.NaT
+  else:
+    return result
 
 def translate_file(source_file, target_file):
   """
@@ -31,16 +36,18 @@ def translate_file(source_file, target_file):
   :param source_file: File-like object containing the original input.
   :param target_file: File-like object that will receive the translated output.
   """
-  stream_reader = pd.read_csv(source_file, chunksize=10)
+  stream_reader = pd.read_csv(source_file, chunksize=10, dtype={'tweet': str, 'label': np.int32})
   write_header = True
   for a_chunk in stream_reader:
     transformed_tweets = a_chunk['tweet'].apply(transform_tweet)
+
     output_chunk = pd.DataFrame(
       {
         'tweet': transformed_tweets,
         'label': a_chunk['label']
       }
     )
+    output_chunk.dropna(inplace=True)
     output_chunk.to_csv(target_file, header=write_header, index=False)
     write_header = False
 
