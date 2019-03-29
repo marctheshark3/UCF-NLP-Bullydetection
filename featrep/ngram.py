@@ -49,15 +49,15 @@ def isolated_encode(tweet_list, n_gram_list):
 
   encoded_data = np.zeros([len(tweet_list), len(n_gram_list)])
   n_gram_size = len(n_gram_list[0].split(' '))
-  count = 0
   n_gram_count = len(n_gram_list)
+  tweet_book_end = ' '.join(['#' for _ in range(n_gram_size)])
   print('Starting {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
   for z in range(n_gram_count):
-    unique_token = n_gram_list[z]
+    unique_token = ' ' + n_gram_list[z] + ' '
     for e in range(len(tweet_list)):
-      if unique_token in tweet_list[e]:
-        count += 1
-        encoded_data[e, z] = count
+      modified_tweet = ' ' + tweet_book_end + tweet_list[e] + tweet_book_end + ' '
+      count = modified_tweet.count(unique_token)
+      encoded_data[e, z] = count
     print('{:5d}/{:5d}\r'.format(z, n_gram_count), end='')
     sys.stdout.flush()
   print('\nDone with {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
