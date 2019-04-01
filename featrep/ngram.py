@@ -1,5 +1,6 @@
 import sys
 import math
+import multiprocessing
 from datetime import datetime
 import numpy as np
 
@@ -33,6 +34,22 @@ def find_n_grams(tweet_list, n_gram_size):
 
   return sorted(n_gram_set)
 
+def encode_tweet(tweet, n_gram_list):
+  n_gram_size = len(n_gram_list[0].split(' '))
+  result = np.zeros((len(n_gram_list),))
+  tweet_n_grams = find_n_grams([tweet,], n_gram_size)
+  for a_tweet_n_gram in tweet_n_grams:
+    n_gram_idx = n_gram_list.index(a_tweet_n_gram)
+    if n_gram_idx >= 0:
+      result[n_gram_idx] += 1
+  return result
+
+def encode_tweet_mp(mp_args):
+  if 'tweet' in mp_args and 'n_gram_list' in mp_args:
+    return encode_tweet(mp_args['tweet'], mp_args['n_gram_list'])
+  else:
+    raise(RuntimeError('Incomplete arguments passed to encode_tweet_mp()'))
+
 def isolated_encode(tweet_list, n_gram_list):
   """
   Transform each tweet in `tweet_list` into a feature vector containing the
@@ -48,20 +65,18 @@ def isolated_encode(tweet_list, n_gram_list):
            representation.
   """
 
-  encoded_data = np.zeros([len(tweet_list), len(n_gram_list)])
-  digit_count = math.ceil(math.log10(encoded_data.shape[0]))
-  format_str = '{done:{digit_count:d}d}/{total:{digit_count:d}d}\r'
   n_gram_size = len(n_gram_list[0].split(' '))
   print('Starting {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
-  for tweet_idx, a_tweet in enumerate(tweet_list):
-    tweet_n_grams = find_n_grams([a_tweet,], n_gram_size)
-    for a_tweet_n_gram in tweet_n_grams:
-      n_gram_idx = n_gram_list.index(a_tweet_n_gram)
-      if n_gram_idx >= 0:
-        encoded_data[tweet_idx, n_gram_idx] += 1
-    print(format_str.format(done=tweet_idx, total=encoded_data.shape[0], digit_count=digit_count), end='')
+  encoded_data = None
+  mp_args = [{'tweet': a_tweet, 'n_gram_list': n_gram_list,} for a_tweet in tweet_list]
+  chunk_size = int(len(tweet_list) / multiprocessing.cpu_count())
+  with multiprocessing.Pool(multiprocessing.cpu_count()) as pool:
+    print('    MP encoding...')
+    vector_list = pool.map(encode_tweet_mp, mp_args, chunksize=chunk_size)
+    print('    Collating...')
+    encoded_data = np.array(list(vector_list))
 
-  print('\nDone with {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
+  print('Done with {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
   return encoded_data
 
 def encode_tweets(tweet_list, n_gram_size_list):
