@@ -34,9 +34,6 @@ def main(input_file_name):
     '4-gram': encode_tweets(text_data_set['tweet'], [4,]),
     '3 and 4-gram': encode_tweets(text_data_set['tweet'], [3, 4,]),
   }
-  for (featrep_key, featrep_result) in feature_representations.items():
-    featrep_output_file_name = '{:s}-{:s}.csv'.format(name_no_ext, featrep_key)
-    pd.DataFrame(featrep_result).to_csv(featrep_output_file_name, index=None, header=None)
 
 if __name__ == '__main__':
   # First argument assumed to be the raw data set file name

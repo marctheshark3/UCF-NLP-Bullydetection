@@ -1,8 +1,10 @@
 import sys
+import math
 from datetime import datetime
 import numpy as np
 
 
+encode_cache = []
 
 def find_n_grams(tweet_list, n_gram_size):
   """
@@ -20,7 +22,6 @@ def find_n_grams(tweet_list, n_gram_size):
   book_end = ['#' for _ in range(n_gram_size)]
   n_gram_set = set()
 
-  # 'a_line' is not an index, it is an actual tweet.
   for a_line in tweet_list:
     line_words = a_line.split(' ')
     word_count = len(line_words)
@@ -48,18 +49,18 @@ def isolated_encode(tweet_list, n_gram_list):
   """
 
   encoded_data = np.zeros([len(tweet_list), len(n_gram_list)])
+  digit_count = math.ceil(math.log10(encoded_data.shape[0]))
+  format_str = '{done:{digit_count:d}d}/{total:{digit_count:d}d}\r'
   n_gram_size = len(n_gram_list[0].split(' '))
-  n_gram_count = len(n_gram_list)
-  tweet_book_end = ' '.join(['#' for _ in range(n_gram_size)])
   print('Starting {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
-  for z in range(n_gram_count):
-    unique_token = ' ' + n_gram_list[z] + ' '
-    for e in range(len(tweet_list)):
-      modified_tweet = ' ' + tweet_book_end + tweet_list[e] + tweet_book_end + ' '
-      count = modified_tweet.count(unique_token)
-      encoded_data[e, z] = count
-    print('{:5d}/{:5d}\r'.format(z, n_gram_count), end='')
-    sys.stdout.flush()
+  for tweet_idx, a_tweet in enumerate(tweet_list):
+    tweet_n_grams = find_n_grams([a_tweet,], n_gram_size)
+    for a_tweet_n_gram in tweet_n_grams:
+      n_gram_idx = n_gram_list.index(a_tweet_n_gram)
+      if n_gram_idx >= 0:
+        encoded_data[tweet_idx, n_gram_idx] += 1
+    print(format_str.format(done=tweet_idx, total=encoded_data.shape[0], digit_count=digit_count), end='')
+
   print('\nDone with {:d}-gram encoding: {:s}'.format(n_gram_size, datetime.now().isoformat(sep=' ')))
   return encoded_data
 
@@ -100,7 +101,13 @@ def encode_tweets(tweet_list, n_gram_size_list):
     # Find the unique set of n-grams in the tweet list.
     n_gram_set = find_n_grams(tweet_list, an_n_gram_size)
     # Transform the tweets to feature vectors using the acquired n-gram set.
-    temp_encode = isolated_encode(tweet_list, n_gram_set)
+    temp_encode = None
+    for a_cache_entry in encode_cache:
+      if tweet_list is a_cache_entry[0] and an_n_gram_size == a_cache_entry[1]:
+        temp_encode = a_cache_entry[2]
+    if temp_encode is None:
+      temp_encode = isolated_encode(tweet_list, n_gram_set)
+      encode_cache.append([tweet_list, an_n_gram_size, temp_encode,])
     # If the final result is not empty ...
     if result is not None:
       # Append the new set of feature vectors to the right of the already-
