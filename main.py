@@ -1,9 +1,11 @@
 import sys
 import os
+import multiprocessing as mp
 import pandas as pd
 from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
+from classify import CrossValidation, ann_train_and_evaluate
 
 def main(input_file_name):
   """
@@ -52,6 +54,23 @@ def main(input_file_name):
 
   for feat_rep_name, a_feat_rep in feature_representations.items():
     print('{:s} shape: {}'.format(feat_rep_name, a_feat_rep.shape))
+  
+  crossval = CrossValidation(feature_representations['3-gram'], text_data_set['label'], 5)
+  for k_fold in range(5):
+    trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
+    print('{:d} -> trn_data.shape: {}, trn_labels.shape: {}, test_data.shape: {}, test_labels.shape: {}'.format(k_fold, trn_data.shape, trn_labels.shape, test_data.shape, test_labels.shape))
+
+    # ANN classification
+    recv_conn, xmit_conn = mp.Pipe()
+    model_proc = mp.Process(
+      target=ann_train_and_evaluate,
+      args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
+    )
+    model_proc.start()
+    fold_metrics = recv_conn.recv()
+    model_proc.join()
+    print("fold {:d} metrics={}".format(k_fold, fold_metrics))
+    
 
 if __name__ == '__main__':
   # First argument assumed to be the raw data set file name
