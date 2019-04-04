@@ -1,6 +1,7 @@
 import sys
-from os import path
+import os
 import pandas as pd
+from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
 
@@ -13,15 +14,29 @@ def main(input_file_name):
 
   :param str input_file_name: Name of the raw data file to process.
   """
-  (name_no_ext, file_ext) = path.splitext(input_file_name)
+  (name_no_ext, file_ext) = os.path.splitext(input_file_name)
   preproc_file_name = '{:s}-preproc{:s}'.format(name_no_ext, file_ext)
+  preproc_regen = True
 
-  # Open both the input and output files, and do the transformation. We can add
-  # logic here later where, should the `preproc` file already exist and bear a
-  # newer timestamp than the original, we would skip the next three (3) lines.
-  with open(input_file_name, "r") as input_file:
-    with open(preproc_file_name, "w") as output_file:
-      translate_file(input_file, output_file)
+  try:
+    input_file_info = os.stat(input_file_name)
+    preproc_file_info = os.stat(preproc_file_name)
+    preproc_regen = (preproc_file_info.st_mtime < input_file_info.st_mtime)
+  except FileNotFoundError as err:
+    if err.filename == input_file_name:
+      raise err
+
+  if preproc_regen:
+    # Open both the input and output files, and do the transformation. We can add
+    # logic here later where, should the `preproc` file already exist and bear a
+    # newer timestamp than the original, we would skip the next three (3) lines.
+    print('Generating pre-processed file:{:s}'.format(datetime.now().isoformat(sep=' ')))
+    with open(input_file_name, "r") as input_file:
+      with open(preproc_file_name, "w") as output_file:
+        translate_file(input_file, output_file)
+    print('Done generating pre-processed file:{:s}'.format(datetime.now().isoformat(sep=' ')))
+  else:
+    print('No need to re-generate pre-processed file.')
 
   # Read in the pre-processed data set
   text_data_set = pd.read_csv(preproc_file_name)
@@ -34,9 +49,9 @@ def main(input_file_name):
     '4-gram': encode_tweets(text_data_set['tweet'], [4,]),
     '3 and 4-gram': encode_tweets(text_data_set['tweet'], [3, 4,]),
   }
-  for (featrep_key, featrep_result) in feature_representations.items():
-    featrep_output_file_name = '{:s}-{:s}.csv'.format(name_no_ext, featrep_key)
-    pd.DataFrame(featrep_result).to_csv(featrep_output_file_name, index=None, header=None)
+
+  for feat_rep_name, a_feat_rep in feature_representations.items():
+    print('{:s} shape: {}'.format(feat_rep_name, a_feat_rep.shape))
 
 if __name__ == '__main__':
   # First argument assumed to be the raw data set file name
