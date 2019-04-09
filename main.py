@@ -73,6 +73,7 @@ def main(input_file_name, options):
         model_proc.join()
         print("fold {:d} metrics={}".format(k_fold, fold_metrics))
     if options.svm:
+      # TODO: Add SVM classification
 
       # SVM
 
@@ -91,8 +92,9 @@ def main(input_file_name, options):
 
       print(m1)
       print(m2)
+      print(m3)
+      print(m4)
 
-      # TODO: Add SVM classification
       pass
     if options.bayes:
       # TODO: Add Naive Bayes classification
