@@ -31,7 +31,6 @@ class CrossValidation:
         self.list[category][0].append(start)
         self.list[category][1].append(end)
 
-
   # Return the training and testing sets/labels
   def get_sets(self, k):
     test_set = []
@@ -46,7 +45,7 @@ class CrossValidation:
 
     for category in range(0, 4):
       for index in self.list[category][0][k]:
-        train_set.append(self.categories[0][index])
+        train_set.append(self.categories[category][index])
         train_labels.append(category)
 
     #Shuffle the data
