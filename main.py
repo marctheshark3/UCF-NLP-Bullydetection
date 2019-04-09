@@ -10,7 +10,6 @@ from featrep import encode_tweets
 from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics
 from sklearn import svm
 
-
 def main(input_file_name, options):
   """
   Top-level program logic. This is an example of the steps executed in series.
@@ -74,6 +73,7 @@ def main(input_file_name, options):
         model_proc.join()
         print("fold {:d} metrics={}".format(k_fold, fold_metrics))
     if options.svm:
+
       # SVM
 
       # one vs one
@@ -91,13 +91,23 @@ def main(input_file_name, options):
 
       print(m1)
       print(m2)
+
       # TODO: Add SVM classification
       pass
     if options.bayes:
       # TODO: Add Naive Bayes classification
       pass
-    
-#>>>>>>> d354f2ef37aaa834bd25f2880f69850fb5b7af7a
+
+
+class DoAllAction(argparse.Action):
+  def __init__(self, option_strings, dest, nargs=None, **kwargs):
+    if nargs is not None:
+      raise ValueError('nargs not allowed in DoAllAction')
+    super(DoAllAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
+  def __call__(self, parser, namespace, values, option_string=None):
+    setattr(namespace, 'ann', True)
+    setattr(namespace, 'svm', True)
+    setattr(namespace, 'bayes', True)
 
 class DoAllAction(argparse.Action):
   def __init__(self, option_strings, dest, nargs=None, **kwargs):
