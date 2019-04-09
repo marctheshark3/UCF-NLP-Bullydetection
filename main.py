@@ -7,7 +7,8 @@ import pandas as pd
 from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
-from classify import CrossValidation, ann_train_and_evaluate
+from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics
+from sklearn import svm
 
 def main(input_file_name, options):
   """
@@ -73,11 +74,42 @@ def main(input_file_name, options):
         print("fold {:d} metrics={}".format(k_fold, fold_metrics))
     if options.svm:
       # TODO: Add SVM classification
+
+      # SVM
+
+      # one vs one
+      svm_clf = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333)
+      svm_linear = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='linear')
+      svm_poly = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='polynomial')
+
+      # one vs rest
+      lin_ovr = svm.LinearSVC()
+
+      m1 = get_svm_metrics(svm_clf, trn_data, trn_labels, test_data, test_labels)
+      m2 = get_svm_metrics(svm_linear, trn_data, trn_labels, test_data, test_labels)
+      m3 = get_svm_metrics(svm_poly, trn_data, trn_labels, test_data, test_labels)
+      m4 = get_svm_metrics(lin_ovr, trn_data, trn_labels, test_data, test_labels)
+
+      print(m1)
+      print(m2)
+      print(m3)
+      print(m4)
+
       pass
     if options.bayes:
       # TODO: Add Naive Bayes classification
       pass
-    
+
+
+class DoAllAction(argparse.Action):
+  def __init__(self, option_strings, dest, nargs=None, **kwargs):
+    if nargs is not None:
+      raise ValueError('nargs not allowed in DoAllAction')
+    super(DoAllAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
+  def __call__(self, parser, namespace, values, option_string=None):
+    setattr(namespace, 'ann', True)
+    setattr(namespace, 'svm', True)
+    setattr(namespace, 'bayes', True)
 
 class DoAllAction(argparse.Action):
   def __init__(self, option_strings, dest, nargs=None, **kwargs):
