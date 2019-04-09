@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+from sklearn.metrics import confusion_matrix
 from . import Metrics
 
 
@@ -36,8 +37,9 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
   training_sample_count = training_set_samples.shape[0]
   n_gram_count = training_set_samples.shape[1]
   unique_class_count = np.max(np.unique(training_set_labels)) + 1
-  one_hot_training_labels = np.zeros((training_sample_count, unique_class_count))
-  one_hot_training_labels[np.arange(training_sample_count), training_set_labels] = 1.
+  one_hot_training_labels = np.zeros((training_sample_count, unique_class_count), np.int8)
+  one_hot_training_labels[np.arange(training_sample_count), training_set_labels] = 1
+  print('one_hot_training_labels.shape={}'.format(one_hot_training_labels.shape))
   model = keras.Sequential()
   model.add(
     keras.layers.InputLayer(
@@ -47,7 +49,7 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
   )
   model.add(
     keras.layers.Dense(
-      1000,
+      500,
       activation=tf.nn.sigmoid,
       name='hidden_layer'
     )
@@ -65,16 +67,19 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
     metrics=['accuracy']
   )
   model.fit(training_set_samples, one_hot_training_labels, epochs=3)
-  predictions = model.predict(test_set_samples)
-  test_sample_count = test_set_samples.shape[0]
-  one_hot_test_labels = np.zeros((test_sample_count, unique_class_count))
-  one_hot_test_labels[np.arange(test_sample_count), test_set_labels] = 1.
-  confusion_matrix = np.zeros((unique_class_count, unique_class_count,))
-  for prediction_idx, a_prediction in enumerate(predictions[:]):
-    prediction_idx = np.argmax(a_prediction)
-    actual_idx = np.argmax(one_hot_test_labels[prediction_idx])
-    confusion_matrix[actual_idx, prediction_idx] += 1.
-  metrics = {}
+  one_hot_predictions = model.predict(test_set_samples)
+  print('one_hot_predictions.shape={}'.format(one_hot_predictions.shape))
+  predictions = np.argmax(one_hot_predictions, axis=1)
+  conf_matrix = confusion_matrix(test_set_labels, predictions, labels=[x for x in range(unique_class_count)])
+  precision_per_class = np.diag(conf_matrix) / np.sum(conf_matrix, axis=0)
+  recall_per_class = np.diag(conf_matrix) / np.sum(conf_matrix, axis=1)
+  overall_accuracy = np.sum(np.diag(conf_matrix)) / test_set_samples.shape[0]
+  metrics = {
+    'confusion_matrix': conf_matrix,
+    Metrics.PRECISION: precision_per_class,
+    Metrics.RECALL: recall_per_class,
+    Metrics.ACCURACY: overall_accuracy
+  }
   xmit_conn.send(metrics)
 
 # vim: set ts=2 sw=2 expandtab:

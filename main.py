@@ -1,13 +1,17 @@
 import sys
 import os
 import multiprocessing as mp
+import argparse
+import numpy as np
 import pandas as pd
 from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
-from classify import CrossValidation, ann_train_and_evaluate
+from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics
+from sklearn import svm
 
-def main(input_file_name):
+
+def main(input_file_name, options):
   """
   Top-level program logic. This is an example of the steps executed in series.
   First, the raw data set is pre-processed (with :py:func:translate_file), then
@@ -41,39 +45,82 @@ def main(input_file_name):
     print('No need to re-generate pre-processed file.')
 
   # Read in the pre-processed data set
-  text_data_set = pd.read_csv(preproc_file_name)
+  text_data_set = pd.read_csv(preproc_file_name, dtype={'tweet': str, 'label': np.int8})
 
-  # In this example, we're doing the conversion to feature representations and
-  # writing to disk. The logic can be easily converted to continue the other
-  # tasks (e.g., classification, statistical significance, etc.)
   feature_representations = {
     '3-gram': encode_tweets(text_data_set['tweet'], [3,]),
     '4-gram': encode_tweets(text_data_set['tweet'], [4,]),
     '3 and 4-gram': encode_tweets(text_data_set['tweet'], [3, 4,]),
   }
 
-  for feat_rep_name, a_feat_rep in feature_representations.items():
-    print('{:s} shape: {}'.format(feat_rep_name, a_feat_rep.shape))
-  
-  crossval = CrossValidation(feature_representations['3-gram'], text_data_set['label'], 5)
-  for k_fold in range(5):
-    trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
-    print('{:d} -> trn_data.shape: {}, trn_labels.shape: {}, test_data.shape: {}, test_labels.shape: {}'.format(k_fold, trn_data.shape, trn_labels.shape, test_data.shape, test_labels.shape))
+  for a_feat_rep_id in options.ngrams.split(','):
+    crossval = CrossValidation(feature_representations[a_feat_rep_id], text_data_set['label'], 5)
 
-    # ANN classification
-    recv_conn, xmit_conn = mp.Pipe()
-    model_proc = mp.Process(
-      target=ann_train_and_evaluate,
-      args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
-    )
-    model_proc.start()
-    fold_metrics = recv_conn.recv()
-    model_proc.join()
-    print("fold {:d} metrics={}".format(k_fold, fold_metrics))
+    if options.ann:
+      for k_fold in options.folds.split(','):
+        k_fold = int(k_fold)
+        trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
+
+        # ANN classification
+        recv_conn, xmit_conn = mp.Pipe()
+        # Starting it as a separate process so that, when used with a CUDA-enabled
+        # GPU, GPU memory will be reclaimed properly.
+        model_proc = mp.Process(
+          target=ann_train_and_evaluate,
+          args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
+        )
+        model_proc.start()
+        fold_metrics = recv_conn.recv()
+        model_proc.join()
+        print("fold {:d} metrics={}".format(k_fold, fold_metrics))
+    if options.svm:
+      # SVM
+
+      # one vs one
+      svm_clf = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333)
+      svm_linear = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='linear')
+      svm_poly = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='polynomial')
+
+      # one vs rest
+      lin_ovr = svm.LinearSVC()
+
+      m1 = get_svm_metrics(svm_clf, trn_data, trn_labels, test_data, test_labels)
+      m2 = get_svm_metrics(svm_linear, trn_data, trn_labels, test_data, test_labels)
+      m3 = get_svm_metrics(svm_poly, trn_data, trn_labels, test_data, test_labels)
+      m4 = get_svm_metrics(lin_ovr, trn_data, trn_labels, test_data, test_labels)
+
+      print(m1)
+      print(m2)
+      # TODO: Add SVM classification
+      pass
+    if options.bayes:
+      # TODO: Add Naive Bayes classification
+      pass
     
+#>>>>>>> d354f2ef37aaa834bd25f2880f69850fb5b7af7a
+
+class DoAllAction(argparse.Action):
+  def __init__(self, option_strings, dest, nargs=None, **kwargs):
+    if nargs is not None:
+      raise ValueError('nargs not allowed in DoAllAction')
+    super(DoAllAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
+  def __call__(self, parser, namespace, values, option_string=None):
+    setattr(namespace, 'ann', True)
+    setattr(namespace, 'svm', True)
+    setattr(namespace, 'bayes', True)
 
 if __name__ == '__main__':
-  # First argument assumed to be the raw data set file name
-  main(sys.argv[1])
+  parser = argparse.ArgumentParser(description='UCF NLP Bully Detection System')
+  parser.add_argument('input_file', nargs=1, help='Data set input file.')
+  parser.add_argument('-n', '--ann', dest='ann', action='store_true', default=False, help='Perform ANN classification.')
+  parser.add_argument('-s', '--svm', dest='svm', action='store_true', default=False, help='Perform SVM classification.')
+  parser.add_argument('-b', '--bayes', dest='bayes', action='store_true', default=False, help='Perform naive bayes classification.')
+  parser.add_argument('-a', '--all', action=DoAllAction, help='Do all classification tasks.')
+  parser.add_argument('-f', '--folds', dest='folds', help='Comma-separated list of folds to execute (default: all)', default='0,1,2,3,4')
+  parser.add_argument('-g', '--ngrams', dest='ngrams', help='Comma-separated list of n-grams to use (default: all)', default='3-gram,4-gram,3 and 4-gram')
+
+  options = parser.parse_args(sys.argv[1:])
+  
+  main(options.input_file[0], options)
 
 # vim: set ts=2 sw=2 expandtab:
