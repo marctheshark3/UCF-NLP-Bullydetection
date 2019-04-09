@@ -23,5 +23,7 @@ def get_svm_metrics(model,train_data,train_labels,test_data,test_labels):
   print("The confusion matrix:", cm)
   print("Lastly the Classification Report:", report)
 
+  return acc
+
   # vim: set ts=2 sw=2 expandtab:
 
