@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+from sklearn.metrics import confusion_matrix
 from . import Metrics
 
 
@@ -65,16 +66,36 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
     metrics=['accuracy']
   )
   model.fit(training_set_samples, one_hot_training_labels, epochs=3)
-  predictions = model.predict(test_set_samples)
-  test_sample_count = test_set_samples.shape[0]
-  one_hot_test_labels = np.zeros((test_sample_count, unique_class_count))
-  one_hot_test_labels[np.arange(test_sample_count), test_set_labels] = 1.
-  confusion_matrix = np.zeros((unique_class_count, unique_class_count,))
-  for prediction_idx, a_prediction in enumerate(predictions[:]):
-    prediction_idx = np.argmax(a_prediction)
-    actual_idx = np.argmax(one_hot_test_labels[prediction_idx])
-    confusion_matrix[actual_idx, prediction_idx] += 1.
-  metrics = {}
+  one_hot_predictions = model.predict(test_set_samples)
+  predictions = np.argmax(one_hot_predictions, axis=1)
+  conf_matrix = confusion_matrix(test_set_labels, predictions, labels=[x for x in range(unique_class_count)])
+  precision_per_class = np.diag(conf_matrix) / np.sum(conf_matrix, axis=0)
+  recall_per_class = np.diag(conf_matrix) / np.sum(conf_matrix, axis=1)
+  overall_accuracy = np.sum(np.diag(conf_matrix)) / test_set_samples.shape[0]
+  metrics = {
+    'confusion_matrix': conf_matrix,
+    Metrics.PRECISION: precision_per_class,
+    Metrics.RECALL: recall_per_class,
+    Metrics.ACCURACY: overall_accuracy
+  }
+  # test_sample_count = test_set_samples.shape[0]
+  # one_hot_test_labels = np.zeros((test_sample_count, unique_class_count))
+  # one_hot_test_labels[np.arange(test_sample_count), test_set_labels] = 1.
+  # confusion_matrix = np.zeros((unique_class_count, unique_class_count,))
+  # true_positive = [0. for _ in range(unique_class_count)]
+  # false_negative = [0. for _ in range(unique_class_count)]
+  # for prediction_idx, a_prediction in enumerate(predictions[:]):
+  #   prediction_idx = np.argmax(a_prediction)
+  #   actual_idx = np.argmax(one_hot_test_labels[prediction_idx])
+  #   confusion_matrix[actual_idx, prediction_idx] += 1.
+  #   if actual_idx == prediction_idx:
+  #     true_positive[actual_idx] += 1.
+  #   else:
+  #     false_negative[actual_idx] += 1.
+  # metrics = {
+  #   'confusion_matrix': confusion_matrix,
+  #   Metrics.RECALL: 
+  # }
   xmit_conn.send(metrics)
 
 # vim: set ts=2 sw=2 expandtab:

@@ -1,13 +1,14 @@
 import sys
 import os
 import multiprocessing as mp
+import argparse
 import pandas as pd
 from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
 from classify import CrossValidation, ann_train_and_evaluate
 
-def main(input_file_name):
+def main(input_file_name, options):
   """
   Top-level program logic. This is an example of the steps executed in series.
   First, the raw data set is pre-processed (with :py:func:translate_file), then
@@ -56,24 +57,53 @@ def main(input_file_name):
     print('{:s} shape: {}'.format(feat_rep_name, a_feat_rep.shape))
   
   crossval = CrossValidation(feature_representations['3-gram'], text_data_set['label'], 5)
-  for k_fold in range(5):
-    trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
-    print('{:d} -> trn_data.shape: {}, trn_labels.shape: {}, test_data.shape: {}, test_labels.shape: {}'.format(k_fold, trn_data.shape, trn_labels.shape, test_data.shape, test_labels.shape))
 
-    # ANN classification
-    recv_conn, xmit_conn = mp.Pipe()
-    model_proc = mp.Process(
-      target=ann_train_and_evaluate,
-      args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
-    )
-    model_proc.start()
-    fold_metrics = recv_conn.recv()
-    model_proc.join()
-    print("fold {:d} metrics={}".format(k_fold, fold_metrics))
+  if options.ann:
+    for k_fold in options.folds.split(','):
+      trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
+      print('{:d} -> trn_data.shape: {}, trn_labels.shape: {}, test_data.shape: {}, test_labels.shape: {}'.format(k_fold, trn_data.shape, trn_labels.shape, test_data.shape, test_labels.shape))
+
+      # ANN classification
+      recv_conn, xmit_conn = mp.Pipe()
+      # Starting it as a separate process so that, when used with a CUDA-enabled
+      # GPU, GPU memory will be reclaimed properly.
+      model_proc = mp.Process(
+        target=ann_train_and_evaluate,
+        args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
+      )
+      model_proc.start()
+      fold_metrics = recv_conn.recv()
+      model_proc.join()
+      print("fold {:d} metrics={}".format(k_fold, fold_metrics))
+  if options.svm:
+    # TODO: Add SVM classification
+    pass
+  if options.bayes:
+    # TODO: Add Naive Bayes classification
+    pass
     
 
+class DoAllAction(argparse.Action):
+  def __init__(self, option_strings, dest, nargs=None, **kwargs):
+    if nargs is not None:
+      raise ValueError('nargs not allowed in DoAllAction')
+    super(DoAllAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
+  def __call__(self, parser, namespace, values, option_string=None):
+    setattr(namespace, 'ann', True)
+    setattr(namespace, 'svm', True)
+    setattr(namespace, 'bayes', True)
+
 if __name__ == '__main__':
-  # First argument assumed to be the raw data set file name
-  main(sys.argv[1])
+  parser = argparse.ArgumentParser(description='UCF NLP Bully Detection System')
+  parser.add_argument('input_file', nargs=1, help='Data set input file.')
+  parser.add_argument('-n', '--ann', dest='ann', action='store_true', default=False, help='Perform ANN classification.')
+  parser.add_argument('-s', '--svm', dest='svm', action='store_true', default=False, help='Perform SVM classification.')
+  parser.add_argument('-b', '--bayes', dest='bayes', action='store_true', default=False, help='Perform naive bayes classification.')
+  parser.add_argument('-a', '--all', action=DoAllAction, help='Do all classification tasks.')
+  parser.add_argument('-f', '--folds', dest='folds', help='Comma-separated list of folds to execute (default: all)', default='0,1,2,3,4')
+
+  options = parser.parse_args(sys.argv[1:])
+  
+  main(options.input_file[0], options)
 
 # vim: set ts=2 sw=2 expandtab:
