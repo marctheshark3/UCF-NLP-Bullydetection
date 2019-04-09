@@ -63,7 +63,7 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
   )
   model.compile(
     optimizer='adam',
-    loss='binary_crossentropy',
+    loss='mse',
     metrics=['accuracy']
   )
   model.fit(training_set_samples, one_hot_training_labels, epochs=3)
