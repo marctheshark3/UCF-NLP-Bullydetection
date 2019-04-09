@@ -2,6 +2,7 @@ import sys
 import os
 import multiprocessing as mp
 import argparse
+import numpy as np
 import pandas as pd
 from datetime import datetime
 from preproc import translate_file
@@ -42,45 +43,40 @@ def main(input_file_name, options):
     print('No need to re-generate pre-processed file.')
 
   # Read in the pre-processed data set
-  text_data_set = pd.read_csv(preproc_file_name)
+  text_data_set = pd.read_csv(preproc_file_name, dtype={'tweet': str, 'label': np.int8})
 
-  # In this example, we're doing the conversion to feature representations and
-  # writing to disk. The logic can be easily converted to continue the other
-  # tasks (e.g., classification, statistical significance, etc.)
   feature_representations = {
     '3-gram': encode_tweets(text_data_set['tweet'], [3,]),
     '4-gram': encode_tweets(text_data_set['tweet'], [4,]),
     '3 and 4-gram': encode_tweets(text_data_set['tweet'], [3, 4,]),
   }
 
-  for feat_rep_name, a_feat_rep in feature_representations.items():
-    print('{:s} shape: {}'.format(feat_rep_name, a_feat_rep.shape))
-  
-  crossval = CrossValidation(feature_representations['3-gram'], text_data_set['label'], 5)
+  for a_feat_rep_id in options.ngrams.split(','):
+    crossval = CrossValidation(feature_representations[a_feat_rep_id], text_data_set['label'], 5)
 
-  if options.ann:
-    for k_fold in options.folds.split(','):
-      trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
-      print('{:d} -> trn_data.shape: {}, trn_labels.shape: {}, test_data.shape: {}, test_labels.shape: {}'.format(k_fold, trn_data.shape, trn_labels.shape, test_data.shape, test_labels.shape))
+    if options.ann:
+      for k_fold in options.folds.split(','):
+        k_fold = int(k_fold)
+        trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
 
-      # ANN classification
-      recv_conn, xmit_conn = mp.Pipe()
-      # Starting it as a separate process so that, when used with a CUDA-enabled
-      # GPU, GPU memory will be reclaimed properly.
-      model_proc = mp.Process(
-        target=ann_train_and_evaluate,
-        args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
-      )
-      model_proc.start()
-      fold_metrics = recv_conn.recv()
-      model_proc.join()
-      print("fold {:d} metrics={}".format(k_fold, fold_metrics))
-  if options.svm:
-    # TODO: Add SVM classification
-    pass
-  if options.bayes:
-    # TODO: Add Naive Bayes classification
-    pass
+        # ANN classification
+        recv_conn, xmit_conn = mp.Pipe()
+        # Starting it as a separate process so that, when used with a CUDA-enabled
+        # GPU, GPU memory will be reclaimed properly.
+        model_proc = mp.Process(
+          target=ann_train_and_evaluate,
+          args=(trn_data, trn_labels, test_data, test_labels, xmit_conn)
+        )
+        model_proc.start()
+        fold_metrics = recv_conn.recv()
+        model_proc.join()
+        print("fold {:d} metrics={}".format(k_fold, fold_metrics))
+    if options.svm:
+      # TODO: Add SVM classification
+      pass
+    if options.bayes:
+      # TODO: Add Naive Bayes classification
+      pass
     
 
 class DoAllAction(argparse.Action):
@@ -101,6 +97,7 @@ if __name__ == '__main__':
   parser.add_argument('-b', '--bayes', dest='bayes', action='store_true', default=False, help='Perform naive bayes classification.')
   parser.add_argument('-a', '--all', action=DoAllAction, help='Do all classification tasks.')
   parser.add_argument('-f', '--folds', dest='folds', help='Comma-separated list of folds to execute (default: all)', default='0,1,2,3,4')
+  parser.add_argument('-g', '--ngrams', dest='ngrams', help='Comma-separated list of n-grams to use (default: all)', default='3-gram,4-gram,3 and 4-gram')
 
   options = parser.parse_args(sys.argv[1:])
   

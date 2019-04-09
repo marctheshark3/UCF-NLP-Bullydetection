@@ -36,7 +36,7 @@ def find_n_grams(tweet_list, n_gram_size):
 
 def encode_tweet(tweet, n_gram_list):
   n_gram_size = len(n_gram_list[0].split(' '))
-  result = np.zeros((len(n_gram_list),))
+  result = np.zeros((len(n_gram_list),), np.int16)
   tweet_n_grams = find_n_grams([tweet,], n_gram_size)
   for a_tweet_n_gram in tweet_n_grams:
     n_gram_idx = n_gram_list.index(a_tweet_n_gram)
@@ -72,7 +72,7 @@ def isolated_encode(tweet_list, n_gram_list):
   chunk_size = int(len(tweet_list) / multiprocessing.cpu_count())
   with multiprocessing.Pool(multiprocessing.cpu_count()) as pool:
     print('    MP encoding...')
-    vector_list = pool.map(encode_tweet_mp, mp_args, chunksize=chunk_size)
+    vector_list = pool.imap(encode_tweet_mp, mp_args, chunksize=chunk_size)
     print('    Collating...')
     encoded_data = np.array(list(vector_list))
 
