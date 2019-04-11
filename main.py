@@ -81,14 +81,14 @@ def main(input_file_name, options):
         # one vs one
         svm_clf = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333)
         svm_linear = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='linear')
-        svm_poly = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='polynomial')
+        #svm_poly = svm.SVC(gamma='scale', decision_function_shape='ovo', random_state=333, kernel='polynomial')
 
         # one vs rest
         lin_ovr = svm.LinearSVC()
 
         m1 = get_svm_metrics(svm_clf, trn_data, trn_labels, test_data, test_labels)
         m2 = get_svm_metrics(svm_linear, trn_data, trn_labels, test_data, test_labels)
-        m3 = get_svm_metrics(svm_poly, trn_data, trn_labels, test_data, test_labels)
+        #m3 = get_svm_metrics(svm_poly, trn_data, trn_labels, test_data, test_labels)
         m4 = get_svm_metrics(lin_ovr, trn_data, trn_labels, test_data, test_labels)
 
         print("RBF OVO Accuracy for fold:", k_fold, "is:", m1)
