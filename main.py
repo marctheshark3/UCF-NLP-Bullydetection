@@ -7,7 +7,7 @@ import pandas as pd
 from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
-from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics
+from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics, NaiveB
 from sklearn import svm
 
 def main(input_file_name, options):
@@ -95,16 +95,18 @@ def main(input_file_name, options):
         print("Linear OVO Accuracy for fold:", k_fold, "is:", m2)
         print("Poly OVO Accuracy for fold:", k_fold, "is:", m3)
         print("Linear OVR Accuracy for fold:", k_fold, "is:", m4)
-        pass
-
-
-
-
-
 
     if options.bayes:
-      # TODO: Add Naive Bayes classification
-      pass
+      # Naive Bayes
+      for k_fold in options.folds.split(','):
+        k_fold = int(k_fold)
+        trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
+
+        bayesClassifier = NaiveB()
+        bayesClassifier.fit(trn_data, trn_labels)
+        bayesClassifier.test(test_data, test_labels)
+        bayesClassifier.printstats()
+
 
 
 class DoAllAction(argparse.Action):
