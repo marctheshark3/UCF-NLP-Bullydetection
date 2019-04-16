@@ -98,14 +98,17 @@ def main(input_file_name, options):
 
     if options.bayes:
       # Naive Bayes
+      bayesClassifier = NaiveB()
       for k_fold in options.folds.split(','):
         k_fold = int(k_fold)
         trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
-
-        bayesClassifier = NaiveB()
+        
+        bayesClassifier.reset()
         bayesClassifier.fit(trn_data, trn_labels)
         bayesClassifier.test(test_data, test_labels)
-        bayesClassifier.printstats()
+        bayesClassifier.print_stats(display=True)
+      bayesClassifier.print_final_stats()
+
 
 
 
