@@ -1,16 +1,16 @@
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import confusion_matrix, recall_score, accuracy_score
+from sklearn.metrics import confusion_matrix, recall_score, precision_score, f1_score
 
 # Initialize the classifier
 class NaiveB:
 	def __init__(self):
-		self.model = GaussianNB()
+		self.model = GaussianNB([0.787, 0.06, 0.06, 0.093])
 		self.labels = []
 		self.true_l = []
-		self.accuracy = []
+		self.precision = []
 		self.recall = []
-		self.matrix = []
+		self.f1 = []
 		self.k = 0
 
 		print("*-----------------------------*")
@@ -31,34 +31,38 @@ class NaiveB:
 
 # Calculate stats. If display == True, print stats as well
 	def print_stats(self, display):
-		acc = accuracy_score(self.true_l, self.labels)
-		self.accuracy.append(acc)
+		prec = precision_score(self.true_l, self.labels, [0,1,2,3], average = 'macro')
+		self.precision.append(prec)
+
 		rec = recall_score(self.true_l, self.labels,[0,1,2,3], average = 'macro')
 		self.recall.append(rec)
-		matrix = confusion_matrix(self.true_l, self.labels, [0,1,2,3])
-		self.matrix.append(matrix)
+
+		f1 = f1_score(self.true_l, self.labels, [0,1,2,3], average = 'macro')
+		self.f1.append(f1)
+
 		if display:
 			print("*-----------------------------*")
-			print("\nAccuracy")
-			print(acc)
+			print("\nPrecision")
+			print(prec)
 			print("\nRecall")
 			print(rec)
-			print("\nConfusion Matrix")
-			print(matrix)
+			print("\nF1")
+			print(f1)
 
 # Print average over all runs
 	def print_final_stats(self):
 		print("*-----------------------------*")
+		print(self.k)
 		print("Final Statistics")
-		print("\nAccuracy")
-		print(np.sum(self.accuracy)/self.k)
+		print("\nPrecision")
+		print(np.sum(self.precision)/self.k)
 		print("\nRecall")
 		print(np.sum(self.recall)/self.k)
-		print("\nConfusion Matrix")
-		print(np.sum(self.matrix, axis = 0)/self.k)
+		print("\nF1")
+		print(np.sum(self.f1, axis = 0)/self.k)
 		print("*-----------------------------*")		
 
 # Reset the model, increase the count
 	def reset(self):
-		self.model = GaussianNB()
+		self.model = GaussianNB([0.787, 0.06, 0.06, 0.093])
 		self.k +=1
