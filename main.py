@@ -122,16 +122,6 @@ class DoAllAction(argparse.Action):
     setattr(namespace, 'svm', True)
     setattr(namespace, 'bayes', True)
 
-class DoAllAction(argparse.Action):
-  def __init__(self, option_strings, dest, nargs=None, **kwargs):
-    if nargs is not None:
-      raise ValueError('nargs not allowed in DoAllAction')
-    super(DoAllAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
-  def __call__(self, parser, namespace, values, option_string=None):
-    setattr(namespace, 'ann', True)
-    setattr(namespace, 'svm', True)
-    setattr(namespace, 'bayes', True)
-
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='UCF NLP Bully Detection System')
   parser.add_argument('input_file', nargs=1, help='Data set input file.')
