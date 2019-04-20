@@ -65,6 +65,41 @@ could lead to solutions that can either filter out any offensive content
 automatically, or significantly shorten the response time to an incident,
 possibly preventing the more dire secondary effects of cyber-bullying.
 
+The report content as follows will begin with a formal statement of the problem
+the authors attempt to address. Following will be a short survey of works that
+are related to the system documented in this paper. Then, a discussion of the
+system's methodology will dive into the inner workings, detailing how the system
+attempts to solve the aforementioned problem, as well as detailing how the
+system's performance will be profiled. The following sections covers
+briefly the risks identified and/or realized during implementation, and how, if
+at all, they were mitigated. After the discussion on risks, the system's
+performance is documented by following the system profiling plan detailed in
+the section covering the system's methodology. The system performance profile is
+then followed by a short discussion regarding insights gleaned from the system
+performance profile. After the system performance discussion, the work breakdown
+and delegation scheme applied during system implementation will be covered.
+Finally, the paper will conclude with short statements regarding the overall
+investigation, including possibilities for future enhancements to the work.
+
+\section{Problem Statement}\label{sec:problem_statement}
+
+The methods presented in this paper document the implementation of a
+proof-of-concept system that is able to accept short messages in plain text,
+and classify these messages, identifying those with content that could be
+considered as cyber-bullying. Leveraging technological advances in Natural
+Language Processing, along with algorithms borrowed from the areas of Artificial
+Intelligence and Machine Learning, the system will be trained to recognize and
+classify cyber-bullying traffic. The classification will go beyond simply
+identifying bullying traffic, but will also categorize the bullying into three
+(3) distinct classes:
+\begin{description}
+    \item[Cultural Harassment] Offensive content primarily focusing on the
+    victim's race or religious beliefs.
+    \item[Sexual Harassment] Amplification of stereotypical behavior for a given
+    gender, or gender identification.
+    \item[Personal Attacks] Ridicule based on a victim's outward-visible
+    attributes, such as appearance, mannerisms, or intelligence.
+\end{description}
 
 \section{Related Work}\label{sec:related}
 
@@ -88,7 +123,7 @@ in this report differs from \textit{Anti Bully} in two important ways:
 
 The \textit{Anti Bully} system code base does include a good data set which can
 be used in the proof-of-concept documented in this paper, albeit with some
-modifications (see Section \ref{sec:dataset}).
+modifications (see Section \ref{subsec:eval_dataset}).
 
 A library that has proven invaluable in the proof-of-concept implementation
 documented in this paper is the \textit{Natural Language Toolkit (NLTK)}
@@ -130,22 +165,6 @@ Finally, serving as the foundation for nearly all of these external libraries,
 is the \textit{NumPy} numerical computation library \cite{oliphant2006guide}.
 
 \section{Methodology}\label{sec:design}
-The implementation presented in this paper advocates for the implementation of a
-proof-of-concept meeting the desired features as outlined in Section \ref{sec:introduction}.
-Leveraging technological advances in Natural
-Language Processing, along with algorithms borrowed from the areas of Artificial
-Intelligence and Machine Learning, the system will be trained to recognize and
-classify cyber-bullying traffic. The classification will go beyond simply
-identifying bullying traffic, but will also categorize the bullying into three
-(3) distinct classes:
-\begin{description}
-    \item[Cultural Harassment] Offensive content primarily focusing on the
-    victim's race or religious beliefs.
-    \item[Sexual Harassment] Amplification of stereotypical behavior for a given
-    gender, or gender identification.
-    \item[Personal Attacks] Ridicule based on a victim's outward-visible
-    attributes, such as appearance, mannerisms, or intelligence.
-\end{description}
 
 The system, at its core, is very similar to classification systems
 common in the areas of Artificial Intelligence and Machine Learning. The system
@@ -249,9 +268,9 @@ present in the input, then describing each text sample as a vector expressing
 the appearance frequency of these n-grams. The process is able to produce
 vector representations for each text sample based on:
 \begin{itemize}
-  \item The presence count of unique 3-grams in the sample
-  \item The presence count of unique 4-grams in the sample
-  \item The concatenation of the above two results
+  \item \textbf{3-gram} - The presence count of unique 3-grams in the sample
+  \item \textbf{4-gram} - The presence count of unique 4-grams in the sample
+  \item \textbf{3 and 4-gram} - The concatenation of the above two results
 \end{itemize}
 
 \subsection{Classification and Evaluation}\label{subsec:classification}
@@ -382,13 +401,13 @@ As output, the \textit{Classification and Evaluation} process creates the
 \textit{Classification Result} artifact. This artifact is a CSV-formatted file
 that describes the performance of a classifier using the following metrics:
 \begin{enumerate*}[(1)]
-  \item Accuracy,
-  \item Precision, and
-  \item Recall.
+  \item Precision,
+  \item Recall, and
+  \item F1 score
 \end{enumerate*}
 
-The results produced by the individual classifiers are stored in external
-artifacts in order to serve two use cases:
+The results produced by the individual classifiers are stored in an external
+artifact in order to serve two use cases:
 
 \begin{itemize}
   \item Import the resulting metrics easily into this report.
@@ -501,7 +520,7 @@ classifier. Classifiers with a superior \textit{Accuracy} score that do not
 exhibit overlap with any worse performing classifier's confidence interval are
 deemed as ``significantly better.''
 
-\subsection{Data Set}\label{sec:dataset}
+\subsection{Data Set}\label{subsec:eval_dataset}
 The data set used in this proof-of-concept, as alluded to in Section
 \ref{sec:related}, is a modified version of the data set provided by the
 \textit{Anti Bully} system \cite{Li2016}. The data set as provided is labeled,
@@ -510,6 +529,88 @@ but the labels only contain two (2) classes: \textbf{bullying} and
 Section \ref{sec:introduction}, the data set labeling has been
 enhanced such that the samples labeled as \textbf{bullying} are distributed
 among the categories identified in Section \ref{sec:design}.
+
+\subsection{ANN Classification Results}\label{subsec:ann_results}
+The performance of the ANN classifier on the Data Set was evaluated by comparing
+the network's predictions against the true labels in each test set used. Given
+the cross-validation approach applied to the data and the classifiers, as
+detailed in Section \ref{subsec:classification}, each cross-validation run
+produced its own set of metrics. For the purposes of evaluating the classifier,
+the set of metrics produced in each cross-validation fold were averaged granting
+equal weight to each fold. Separate metrics were included, however, based on
+what feature representation was fed to the ANN classifier. Details on the
+different feature representations are documented in Section
+\ref{subsec:feature_rep}, and they are identified in the results by the labels
+that appear in boldface prior to each representation's brief explanation. The
+results of the ANN classification run are shown in Table
+\ref{tab:ann_overall_results}.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{| l | r | r | r |}
+    \hline
+    \textbf{Representation} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+    \hline\hline
+    \textbf{3-gram} & 0.840 & 0.868 & 0.829 \\
+    \hline
+    \textbf{4-gram} & 0.849 & 0.876 & 0.838 \\
+    \hline
+    \textbf{3 and 4-gram} & 0.855 & 0.882 & 0.852 \\
+    \hline
+  \end{tabular}
+  \caption{The overall weighted average of the performance metrics derived from
+  ANN classification runs on each feature representation of the data. Average
+  weighing was done by scaling the raw results using the input data set sample
+  presence count.}
+  \label{tab:ann_overall_results}
+\end{table}
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{ANN Classification}\label{subsec:ann_discussion}
+
+The ANN classifier performed about as well as was originally expected, as
+discussed in Section \ref{sec:evaluation}, particularly when discussing the
+prior work done by Agrawal \cite{agrawal2018deep}, achieving in most cases a
+rounded \textit{Recall} score of $0.87$ or better. A deeper dive into the
+per-class metrics, however, does reveal a curious detail regarding the
+classifier's performance. For example, Table \ref{tab:ann_byclass_results}
+displays the per-class metrics acquired from the ``\textbf{3 and 4-gram}''
+feature representation run, which at first glance appears to be the best
+performer.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{| l | r | r | r | r |}
+    \hline
+    \textbf{Class Label} & \textbf{Count} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+    \hline\hline
+    \textbf{No Bullying} & 1,440 & 0.880 & 0.993 & 0.933 \\
+    \textbf{Sexual} & 105 & 0.981 & 0.981 & 0.981 \\
+    \textbf{Cultural} & 104 & 1.0 & 0.942 & 0.970 \\
+    \textbf{Personal} & 218 & 0.769 & 0.138 & 0.233 \\
+    \hline
+  \end{tabular}
+  \caption{ANN classification performance metrics, broken down per class label,
+  on the last cross-validation fold of the ``3 and 4-gram'' feature
+  representation of the data set.}
+  \label{tab:ann_byclass_results}
+\end{table}
+
+The most surprising fact that emerges from these metrics is not only how well
+the \textit{No Bullying}, \textit{Sexual Harassment} and \textit{Cultural
+Harassment} classification performed, but also how poorly the \textit{Personal
+Attacks} classification performed. The overall metrics were primarily buoyed by
+the strong performance of the \textit{No Bullying} classification, given that
+the overall metrics were weighed based on data set composition. A possible
+explanation for this discrepancy could be that the content in tweets labeled
+as \textit{Sexual Harassment} and \textit{Cultural Harassment} was very
+consistent, easily trainable. Whereas the \textit{Personal Attacks} tweets were
+too similar to content labeled as \textit{No Bullying}, making it difficult to
+positively identify. This last statement is supported by the fact that the
+confusion matrix for the run profiled in Table \ref{tab:ann_byclass_results}
+showed that nearly all samples whose ground truth label was \textit{Personal
+Attacks} produced a predicted label of \textit{No Bullying}.
 
 \section{Work Distribution}\label{sec:plan_roles}
 The proof-of-concept implementation exercise is divided into five (5)
@@ -565,6 +666,9 @@ Although all team members will contribute content to it,
 \textbf{Mr. Rolando Nieves} will be responsible for producing the final report
 that will document the results observed while exercising the proof-of-concept
 implementation documented in this paper.
+
+\section{Conclusion}\label{sec:conclusion}
+\todo{Add conclusion.}
 
 \bibliographystyle{ieeetr}
 \bibliography{final_report}
