@@ -8,8 +8,8 @@
                 "-interaction=nonstopmode",
                 "-file-line-error",
                 "-pdf",
-                "-output-directory=tex-output",
-                "-aux-directory=tex-output",
+                "-output-directory=%DIR%/tex-output",
+                "-aux-directory=%DIR%/tex-output",
                 "%DOC%"
             ]
         },
@@ -20,8 +20,8 @@
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-file-line-error",
-                "-aux-directory=tex-output",
-                "-output-directory=tex-output",
+                "-aux-directory=%DIR%/tex-output",
+                "-output-directory=%DIR%/tex-output",
                 "%DOC%"
             ]
         },
@@ -52,7 +52,7 @@
         "posteriori",
         "sklearn"
     ],
-    "latex-workshop.latex.outDir": "./tex-output",
+    "latex-workshop.latex.outDir": "%DIR%/tex-output",
     "python.venvPath": "~/pythonenv",
     "python.pythonPath": "~/pythonenv/CAP6640_PROJ/bin/python"
 }
