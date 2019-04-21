@@ -462,8 +462,9 @@ the lower and upper bounds of the confidence interval (as shown in Equation
 \subsection{Significance Result}\label{subsec:stat_sig_result}
 The \textit{Statistical Significance} process, as its output, creates the
 \textit{Significance Result} artifact. This artifact is a CSV-formatted file
-that describes the $95$\% confidence interval around the accuracy score of each
-classifier run. The artifact is designed for easy inclusion into this report.
+that describes the $95$\% confidence interval around the \textit{Recall} score
+of each classifier run. The artifact is designed for easy inclusion into this
+report.
 
 \section{Risk Management}\label{sec:expectations}
 
@@ -549,8 +550,8 @@ we expect this proof-of-concept to at least meet this performance baseline.
 
 In order to objectively evaluate the performance of all classifiers used, a
 statistical significance test is done on the classifier's performance. Deriving
-a $95$\% confidence interval around the \textit{Accuracy} score of each
-classifier. Classifiers with a superior \textit{Accuracy} score that do not
+a $95$\% confidence interval around the \textit{Recall} score of each
+classifier. Classifiers with a superior \textit{Recall} score that do not
 exhibit overlap with any worse performing classifier's confidence interval are
 deemed as ``significantly better.''
 
@@ -741,13 +742,29 @@ high/low chart depiction of the numerical data is shown in Figure
   \label{tab:stat_sig}
 \end{table}
 
-\begin{figure}[ht!]
+\begin{figure*}[h]
   \centering
-  \includegraphics[width=.5\textwidth]{statsig_highlow.png}
+  \includegraphics[width=.9\textwidth]{statsig_highlow.png}
   \caption{High/Low chart depicting the 95\% confidence interval for each
   classifier and feature representation combination implemented in this system.}
   \label{fig:stat_sig_highlow}
-\end{figure}
+\end{figure*}
+
+The statistical significance testing yields several insights into the
+performance of the system. The clearest takeaway from this analysis is that all
+classification runs that used an ANN classifier are significantly better than
+all classification runs that used a Na\"ive Bayes classifier. The 
+\textit{Recall} score separation between the 95\% interval lower bound of the
+worst ANN performer and the upper bound of the best Na\"ive Bayes performer is
+$0.154$, whereas the separation between the upper bound of the worst
+ANN performer and the lower bound of the best ANN performer is merely $0.001$.
+
+Among the ANN classifiers, only the comparison between the ``ANN 3-gram'' and
+``ANN 3 and 4-gram'' classification runs rejects the statistical null hypothesis
+$H_0: \hat{r}_0 = \hat{r}_1$ since the upper bound of the 95\% confidence
+interval of ``ANN 3-gram'' ($0.875$) is below the lower bound of the confidence
+interval of ``ANN 3 and 4-gram'' ($0.876$), thus accepting the statistical
+alternative hypothesis $H_a: \hat{r}_0 \neq \hat{r}_1$.
 
 \section{Work Distribution}\label{sec:plan_roles}
 The proof-of-concept implementation exercise is divided into five (5)
@@ -805,7 +822,34 @@ that will document the results observed while exercising the proof-of-concept
 implementation documented in this paper.
 
 \section{Conclusion}\label{sec:conclusion}
-\todo{Add conclusion.}
+
+The proof-of-concept system documented in this report has proven to be a solid
+enhancement of the efforts started by Michelle Li \cite{Li2016}. The system
+provides good evidence that well-established machine learning techniques can
+serve the greater good in helping address and possibly curb society's darker
+impulses.
+
+In current society, however, fielding such a system would levy more than just
+technological challenges. Privacy concerns are a very important consideration
+when putting the technology demonstrated in this report to practice. In the
+opinion of the authors, some deployment choices could steer clear from such
+privacy concerns, such as giving service users the option to deploy and activate
+the system's features on their end, vs. forcing the deployment across the
+entire service's installation base.
+
+There are still areas where a system like the one documented in this report
+could be improved upon. First among them is refining the algorithms such that
+anomalies as those documented in Section \ref{subsec:ann_discussion} are better
+mitigated. Agrawal et. al. \cite{agrawal2018deep} addresses one of the
+enhancement suggestions, which is the portability of a trained system across
+multiple communication platforms. Another opportunity for improvement lies in
+enhancing the system such that either unsupervised learning or Reinforcement
+Learning can replace the use of labeled data sets in what has been up to this
+point a supervised learning system. Unsupervised learning would require
+engineering the feature representation of text units such that patterns emerge
+``organically.'' Reinforcement learning would require an automated reward system
+that encourages the proper labeling of text units. Both of those endeavors have
+the clear potential of proving very rewarding to any interested researchers.
 
 \bibliographystyle{ieeetr}
 \bibliography{final_report}
