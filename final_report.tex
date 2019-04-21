@@ -311,8 +311,9 @@ must be vector-based as well, as show in Equation \ref{eq:ann_linear_xform}. The
 final neuron output is the result of this linear transformation, passed through
 an activation function. Equation \ref{eq:ann_activation} exemplifies the use of
 a \textit{sigmoid} as the activation function, just like the activation function
-used in this proof-of-concept implementation.
+used in this proof-of-concept implementation.\par
 
+\noindent\hrulefill
 \begin{equation}
   \label{eq:ann_linear_xform}
   \textbf{z} = \textbf{W}\textbf{x} + \textbf{b}
@@ -332,6 +333,7 @@ used in this proof-of-concept implementation.
   \item[$\textbf{y}$] - Activation result; neuron output
   \item[$\sigma$] - Sigmoid activation function 
 \end{description}
+\noindent\hrulefill
 
 The ANN classifier used in this proof-of-concept was designed to contain a total
 of three (3) layers: a input layer, one (1) hidden layer, and an output layer.
@@ -365,8 +367,9 @@ the conditional probabilities between the class and a classified instance, with
 assumed independence between the blocks of such instance. The label is assigned
 based on the greedy rule, such that the class which yields the highest
 probability is chosen as an assigned class. A more formal exposition of the
-concept is shown in Equation \ref{eq:naive_bayes}.
+concept is shown in Equation \ref{eq:naive_bayes}.\par
 
+\noindent\hrulefill
 \begin{equation}
   \label{eq:naive_bayes}
   \begin{aligned}
@@ -383,6 +386,7 @@ concept is shown in Equation \ref{eq:naive_bayes}.
   \item[$X$] - an input vector which consists of entries ${x_0 ... x_i}$
   \item[$J$] - is a set of all classes
 \end{description}
+\noindent\hrulefill
 
 As it is seen in the formula, the prediction of a true label is based only on
 the prior distribution and the conditional probability of every single element
@@ -415,15 +419,45 @@ artifact in order to serve two use cases:
 \end{itemize}
 
 \subsection{Statistical Significance}\label{subsec:stat_significance}
-The \textit{Statistical Significance} process ingests the results from each of the
-classifiers, derives a $95$\% confidence interval around the accuracy of each
-classifier, and based on the confidence interval determines which (if any)
-classifier is ``significantly better'' than the others. The significance test
-is done by ranking the classifier accuracy scores from best to worst, then
-determining whether the confidence interval of the better performers sees any
-overlap with the intervals derived from the worse performing classifiers. Those
-that do not exhibit an overlap with worse performers are identified as
-``significantly better'' than them.
+The \textit{Statistical Significance} process ingests the results from each of
+the classifiers, derives a $95$\% confidence interval around the \textit{Recall}
+score of each performance run, and based on the confidence interval determines
+which (if any) classifier and feature representation combination is is
+``statistically better'' than the others (i.e., rejecting the
+``null hypothesis'' in the comparison). The significance test is done by ranking
+the classifier \textit{Recall} scores from best to worst, then determining
+whether the confidence interval of the better performers sees any overlap with
+the intervals derived from the worse performing classifiers. Those that do not
+exhibit an overlap with worse performers are identified as ``significantly
+better'' than them.\par
+
+Establishing the $95\%$ confidence interval is done by
+assuming a binomial distribution over the scores, using that assumption to
+calculate an estimate for the standard deviation of the distribution (as shown
+in Equation \ref{eq:stat_sig_stddev}), and then using the appropriate
+\textit{z-score} (which, for $95\%$, happens to be $1.96$) in order to establish
+the lower and upper bounds of the confidence interval (as shown in Equation
+\ref{eq:stat_sig_range}).\par
+
+\noindent\hrulefill
+\begin{equation}
+  \label{eq:stat_sig_stddev}
+  \begin{aligned}
+    \hat{\sigma} &= \sqrt{\frac{\hat{r}(1-\hat{r})}{n}}
+  \end{aligned}
+\end{equation}
+
+\begin{equation}
+  \label{eq:stat_sig_range}
+  [(\hat{r} - 1.96 \times \hat{\sigma}), (\hat{r} + 1.96 \times \hat{\sigma})]
+\end{equation}
+\noindent Where:
+\begin{description}
+  \item[$\hat{\sigma}$] - Estimated standard deviation
+  \item[$\hat{r}$] - Estimated recall score
+  \item[$n$] - Total number of samples in the data set  
+\end{description}
+\noindent\hrulefill
 
 \subsection{Significance Result}\label{subsec:stat_sig_result}
 The \textit{Statistical Significance} process, as its output, creates the
@@ -537,15 +571,16 @@ the cross-validation approach applied to the data and the classifiers, as
 detailed in Section \ref{subsec:classification}, each cross-validation run
 produced its own set of metrics. For the purposes of evaluating the classifier,
 the set of metrics produced in each cross-validation fold were averaged granting
-equal weight to each fold. Separate metrics were included, however, based on
-what feature representation was fed to the ANN classifier. Details on the
-different feature representations are documented in Section
-\ref{subsec:feature_rep}, and they are identified in the results by the labels
-that appear in boldface prior to each representation's brief explanation. The
-results of the ANN classification run are shown in Table
+equal weight to each fold. Within each fold, however, the metrics were weighed
+according to the class composition of the cross-validation fold samples.
+Separate metrics were included, however, based on what feature representation
+was fed to the ANN classifier. Details on the different feature representations
+are documented in Section \ref{subsec:feature_rep}, and they are identified in
+the results by the labels that appear in boldface prior to each representation's
+brief explanation. The results of the ANN classification run are shown in Table
 \ref{tab:ann_overall_results}.
 
-\begin{table}[h!]
+\begin{table}[ht!]
   \centering
   \begin{tabular}{| l | r | r | r |}
     \hline
@@ -565,6 +600,50 @@ results of the ANN classification run are shown in Table
   \label{tab:ann_overall_results}
 \end{table}
 
+\subsection{Na\"ive Bayes Classification Results}\label{subsec:bayes_results}
+
+\todo{Introductory paragraph to Bayes results}
+
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{| l | r | r | r |}
+    \hline
+    \textbf{Representation} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+    \hline\hline
+    \textbf{3-gram} & 0.434 & 0.697 & 0.463 \\
+    \hline
+    \textbf{4-gram} & 0.426 & 0.691 & 0.449 \\
+    \hline
+    \textbf{3 and 4-gram} & 0.434 & 0.697 & 0.464 \\
+    \hline
+  \end{tabular}
+  \caption{The overall weighted average of the performance metrics derived from
+  Na\"ive Bayes classification runs on each feature representation of the data.}
+  \label{tab:bayes_overall_results}
+\end{table}
+
+\subsection{SVM Classification Results}\label{subsec:svm_results}
+
+\todo{Introductory paragraph to SVM results}
+
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{| l | r | r | r |}
+    \hline
+    \textbf{Representation} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+    \hline\hline
+    \textbf{3-gram} & 0.0 & 0.0 & 0.0 \\
+    \hline
+    \textbf{4-gram} & 0.0 & 0.0 & 0.0 \\
+    \hline
+    \textbf{3 and 4-gram} & 0.0 & 0.0 & 0.0 \\
+    \hline
+  \end{tabular}
+  \caption{The overall weighted average of the performance metrics derived from
+  SVM classification runs on each feature representation of the data.}
+  \label{tab:svm_overall_results}
+\end{table}
+
 \section{Discussion}\label{sec:discussion}
 
 \subsection{ANN Classification}\label{subsec:ann_discussion}
@@ -579,7 +658,7 @@ displays the per-class metrics acquired from the ``\textbf{3 and 4-gram}''
 feature representation run, which at first glance appears to be the best
 performer.
 
-\begin{table}[h!]
+\begin{table}[ht!]
   \centering
   \begin{tabular}{| l | r | r | r | r |}
     \hline
@@ -610,8 +689,28 @@ too similar to content labeled as \textit{No Bullying}, making it difficult to
 positively identify. This last statement is supported by the fact that the
 confusion matrix for the run profiled in Table \ref{tab:ann_byclass_results}
 showed that nearly all samples whose ground truth label was \textit{Personal
-Attacks} produced a predicted label of \textit{No Bullying}.
+Attacks} produced a predicted label of \textit{No Bullying}.\par
 
+It should be noted that, although Table \ref{tab:ann_byclass_results} is only
+showing the metrics from one of the ``\textbf{3 and 4-gram}'' classification
+runs, the other folds exhibited the same curious disparity within the
+classifier's performance.\par
+
+\subsection{Na\"ive Bayes Classification}\label{subsec:bayes_discussion}
+
+\todo{Add any insights gleaned from Bayes results}
+
+\subsection{SVM Classification}\label{subsec:svm_discussion}
+
+\todo{Add any insights gleaned from SVM results}
+
+\subsection{Statistical Significance Test}\label{subsec:stat_sig_discussion}
+
+In order to determine whether there is any statistically significant improvement
+between any of the feature representation and classification approaches
+documented in this report, a 95\% statistical significance test as discussed in
+Section \ref{subsec:stat_significance} is done on the \textit{Recall} metrics
+produced by every combination of classifier and feature representation.
 \section{Work Distribution}\label{sec:plan_roles}
 The proof-of-concept implementation exercise is divided into five (5)
 primary task areas. The order in which the tasks are presented in this paper
@@ -619,7 +718,7 @@ does not necessarily represent the chronological order in which the tasks were
 be carried out.
 
 \subsection{Data Set Labeling}\label{sec:labeling_task}
-As stated in Section \ref{sec:dataset}, the source data set for this
+As stated in Section \ref{subsec:eval_dataset}, the source data set for this
 proof-of-concept needed to be refined in order to accommodate the
 classification taxonomy as described in Section \ref{sec:design}. Although all
 team members contributed to this task, \textbf{Mr. Marc Mailloux} serves as the
