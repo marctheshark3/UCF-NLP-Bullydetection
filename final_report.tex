@@ -265,13 +265,27 @@ traditional in-memory data structures, can be summed up in two points:
 The \textit{Feature Representation} process transforms the pre-processed sample
 text into vector representations by identifying the unique 3-grams and 4-grams
 present in the input, then describing each text sample as a vector expressing
-the appearance frequency of these n-grams. The process is able to produce
-vector representations for each text sample based on:
+the appearance frequency of these n-grams. N-grams here are the results of process
+of splitting the pre-processed chunks of text into the subsets of concequtive
+words, where $n$ determines the size of a given subset. The process is able to 
+produce vector representations for each text sample based on:
 \begin{itemize}
   \item \textbf{3-gram} - The presence count of unique 3-grams in the sample
   \item \textbf{4-gram} - The presence count of unique 4-grams in the sample
   \item \textbf{3 and 4-gram} - The concatenation of the above two results
 \end{itemize}
+
+\subsection{Cross-Validation}\label{subsec:cross_validation}
+To establish the correctness of hyperparameters of the model as well as 
+evaluate the effectiveness of the system, it is decided to split the data set
+into chunks, such that every split generates two disjoint sub-data sets,
+which together span the original data set. Such a procedure is known as
+\textit{Cross Validation}. The idea behind it is to granulate the data and 
+train the models on one part, while testing it on the complimentary part.
+Repeating this procedure some $k$ amount of times tests the robustness and 
+generalizability of the model, while not posing any need of external data for 
+the task.
+
 
 \subsection{Classification and Evaluation}\label{subsec:classification}
 As previously described, the \textit{Classification and Evaluation} process:
@@ -601,8 +615,14 @@ brief explanation. The results of the ANN classification run are shown in Table
 \end{table}
 
 \subsection{Na\"ive Bayes Classification Results}\label{subsec:bayes_results}
+The performance of Na\"ive Bayes is based on the ability of the algorithm to 
+distinguish between the classes of bullying given the training and testing Data Sets.
+Mainly the focus is to derive some probabilistic characteristics that depict the distribution 
+of samples in Training Data Set which can be generalized to some unknown data - Testing Data Set.
+Model was run in accordance to the Section \ref{subsec:classification}, and the results
+were averaged over all cross-validation fold samples. The performance of Na\"ive Bayes can be 
+seen in the Table \ref{tab:bayes_overall_results}.
 
-\todo{Introductory paragraph to Bayes results}
 
 \begin{table}[ht!]
   \centering
@@ -697,8 +717,33 @@ runs, the other folds exhibited the same curious disparity within the
 classifier's performance.\par
 
 \subsection{Na\"ive Bayes Classification}\label{subsec:bayes_discussion}
+Being one of the simplest algorithms for the classification purposes, Na\"ive Bayes
+did not perform well on such a diverse and unbalanced data set. As it was noted in
+Section \ref{subsec:ann_discussion}, the classifier finds it hard to differentiate 
+between \textit{No Bullying} and \textit{Personal Attacks} classes, while perfectly 
+labeling \textit{Sexual Harassment} and \textit{Cultural Harassment}. This might be
+because the \textit{Personal Attacks} section is too broad and contain many different
+embeddings which overlap with \textit{No Bullying}, whike other sections are more refined
+and have specific n-grams which trigger the classifier. The confusion matrix for \textbf{3-gram}
+representation is shown in Table \ref{tab:bayes_confusion_matrix}.
 
-\todo{Add any insights gleaned from Bayes results}
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{| l | r | r | r | r |}
+    \hline
+    \textbf{Class Label} & \textbf{No Bullying} & \textbf{Cultural} & \textbf{Sexual} & \textbf{Personal} \\
+    \hline\hline
+    \textbf{No Bullying} & 740 & 120 & 305 & 275 \\
+    \textbf{Cultural} & 0 & 104 & 0 & 0 \\
+    \textbf{Sexual} & 0 & 0 & 105 & 0 \\
+    \textbf{Personal} & 90 & 20 & 53 & 55 \\
+    \hline
+  \end{tabular}
+  \caption{Na\"ive Bayes Confusion Matrix for ``3 -gram'' representation,
+  averaged over 5-fold cross-validation}
+  \label{tab:bayes_confusion_matrix}
+\end{table}
+
 
 \subsection{SVM Classification}\label{subsec:svm_discussion}
 
@@ -750,7 +795,7 @@ high/low chart depiction of the numerical data is shown in Figure
 \end{figure}
 
 \section{Work Distribution}\label{sec:plan_roles}
-The proof-of-concept implementation exercise is divided into five (5)
+The proof-of-concept implementation exercise is divided into seven (7)
 primary task areas. The order in which the tasks are presented in this paper
 does not necessarily represent the chronological order in which the tasks were
 be carried out.
@@ -762,11 +807,22 @@ classification taxonomy as described in Section \ref{sec:design}. Although all
 team members contributed to this task, \textbf{Mr. Marc Mailloux} serves as the
 task's point of contact.
 
-\subsection{Text Representation}\label{sec:tokenization_task}
-Transforming the training and test sets from plain english into a form that the
-proof-of-concept system can ingest is fundamental. For this task,
-\textbf{Mr. Marc Mailloux} serves as both the primary developer and the
-point of contact.
+\subsection{Text Tokenization}\label{sec:tokenization_task}
+Transforming the training and test sets from plain English into a form that 
+ignores small derivations from the contextual meaning can improve the accuracy
+of the model. For this task, \textbf{Mr. Marc Mailloux} serves as both the primary 
+developer and the point of contact. 
+
+\subsection{Text Embedding}\label{sec:embedding_task}
+Transforming the text representation from plain English text to vector embeddings
+which will be fed into the system. For this task, \textbf{Mr. Maxim Shelopugin} 
+provides the main methodology and \textbf{Mr. Rolando Nieves} increases the 
+performance for the multi-threaded environment.
+
+\subsection{Cross-Validation}\label{sec:validation_task}
+Separating the data set into training and testing, as well as providing
+minor optimizations like double-counting is done in a separate module, and the
+point of contact for it is \textbf{Mr. Maxim Shelopugin}. 
 
 \subsection{Classifiers}\label{sec:classifier_task}
 The classifier task, given its wide breadth, is divided among all team
@@ -781,7 +837,7 @@ point of contact, follows:
   \item Support Vector Machines (SVM) - SVMs have the possibility of requiring
   the least amount of computing power during both training (as compared with
   ANNs) and classification. The point of contact for this classifier will be
-  \textbf{Mr. Maxim Shelopugin}.
+  \textbf{Mr. Marc Mailloux}.
   \item Na\"{i}ve Bayes - This was the classifier used in the \textit{Anti-Bully}
   system this proof-of-concept will be based on. It will be interesting to
   assess the impact, if any, of implementing the same classifier on a
