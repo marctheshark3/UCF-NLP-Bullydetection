@@ -433,7 +433,7 @@ better'' than them.\par
 
 Establishing the $95\%$ confidence interval is done by
 assuming a binomial distribution over the scores, using that assumption to
-calculate an estimate for the standard deviation of the distribution (as shown
+calculate an estimate for the variance of the distribution (as shown
 in Equation \ref{eq:stat_sig_stddev}), and then using the appropriate
 \textit{z-score} (which, for $95\%$, happens to be $1.96$) in order to establish
 the lower and upper bounds of the confidence interval (as shown in Equation
@@ -453,7 +453,7 @@ the lower and upper bounds of the confidence interval (as shown in Equation
 \end{equation}
 \noindent Where:
 \begin{description}
-  \item[$\hat{\sigma}$] - Estimated standard deviation
+  \item[$\hat{\sigma}$] - Estimated variance
   \item[$\hat{r}$] - Estimated recall score
   \item[$n$] - Total number of samples in the data set  
 \end{description}
@@ -473,7 +473,7 @@ risk where said distribution would be too lopsided to achieve effective
 classification. A survey of the data set after completing the enhanced labeling
 is shown in Table \ref{tab:dataset_survey_first}.
 
-\begin{table}[h!]
+\begin{table}[ht!]
   \centering
   \begin{tabular}{| l | r | r |}
     \hline
@@ -500,7 +500,7 @@ team has decided to duplicate the ``Cultural'' and ``Sexual'' harassment samples
 in the data set, such that the new make-up of the data set looks as shown in
 Table \ref{tab:dataset_survey_final}.
 
-\begin{table}[h!]
+\begin{table}[ht!]
   \centering
   \begin{tabular}{| l | r | r |}
     \hline
@@ -706,11 +706,49 @@ classifier's performance.\par
 
 \subsection{Statistical Significance Test}\label{subsec:stat_sig_discussion}
 
-In order to determine whether there is any statistically significant improvement
-between any of the feature representation and classification approaches
-documented in this report, a 95\% statistical significance test as discussed in
-Section \ref{subsec:stat_significance} is done on the \textit{Recall} metrics
-produced by every combination of classifier and feature representation.
+The results of the statistical significance testing done on the combinations of
+classifier and feature representation are shown in Table \ref{tab:stat_sig}. A
+high/low chart depiction of the numerical data is shown in Figure
+\ref{fig:stat_sig_highlow}.
+
+\begin{table}
+  \centering
+  \begin{tabular}{| c | r | r | r |}
+    \hline
+    \textbf{Combination} & \textbf{Low} & \textbf{High} & \textbf{Actual} \\
+    \hline\hline
+    ANN 3-gram & 0.861 & 0.875 & 0.868 \\
+    \hline
+    ANN 4-gram & 0.870 & 0.883 & 0.876 \\
+    \hline
+    ANN 3 and 4-gram & 0.876 & 0.889 & 0.882 \\
+    \hline
+    Na\"ive Bayes 3-gram & 0.688 & 0.707 & 0.697 \\
+    \hline
+    Na\"ive Bayes 4-gram & 0.681 & 0.700 & 0.691 \\
+    \hline
+    Na\"ive Bayes 3 and 4-gram & 0.688 & 0.707 & 0.697 \\
+    \hline
+    SVM 3-gram & 0.0 & 0.0 & 0.0 \\
+    \hline
+    SVM 4-gram & 0.0 & 0.0 & 0.0 \\
+    \hline
+    SVM 3 and 4-gram & 0.0 & 0.0 & 0.0 \\
+    \hline
+  \end{tabular}
+  \caption{95\% confidence interval on the Recall metric for all classifier and
+  feature representation combinations implemented in this system.}
+  \label{tab:stat_sig}
+\end{table}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=.5\textwidth]{statsig_highlow.png}
+  \caption{High/Low chart depicting the 95\% confidence interval for each
+  classifier and feature representation combination implemented in this system.}
+  \label{fig:stat_sig_highlow}
+\end{figure}
+
 \section{Work Distribution}\label{sec:plan_roles}
 The proof-of-concept implementation exercise is divided into five (5)
 primary task areas. The order in which the tasks are presented in this paper
