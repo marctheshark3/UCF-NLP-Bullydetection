@@ -74,6 +74,7 @@ def main(input_file_name, options):
         print("fold {:d} metrics={}".format(k_fold, fold_metrics))
     if options.svm:
       # SVM
+      SVM_data = []
       for k_fold in options.folds.split(','):
         k_fold = int(k_fold)
         trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
@@ -93,9 +94,20 @@ def main(input_file_name, options):
 
         print("RBF OVO Accuracy for fold:", k_fold, "is:", m1)
         print("Linear OVO Accuracy for fold:", k_fold, "is:", m2)
-        print("Poly OVO Accuracy for fold:", k_fold, "is:", m3)
+        #print("Poly OVO Accuracy for fold:", k_fold, "is:", m3)
         print("Linear OVR Accuracy for fold:", k_fold, "is:", m4)
-        pass
+
+        SVM_data.append(m1)
+        SVM_data.append(m2)
+        #SVM_data.append(m3)
+        SVM_data.append(m4)
+      with open('svmOut.txt', 'w') as f:
+        for item in SVM_data:
+          f.write("%s\n" % item)
+
+
+
+      pass
 
 
 
