@@ -17,3 +17,48 @@ ngram,fold,classifier,precision,recall,f1
 3-gram,nan,naive bayes,0.433761315,0.697356351,0.46312079
 4-gram,nan,naive bayes,0.425781953,0.690677939,0.449249556
 3 and 4-gram,nan,naive bayes,0.434006415,0.697418324,0.463708548
+3-gram,0,SVM RBF OVO,0.59,0.77,0.67
+3-gram,1,SVM RBF OVO,0.59,0.77,0.67
+3-gram,2,SVM RBF OVO,0.59,0.77,0.67
+3-gram,3,SVM RBF OVO,0.59,0.77,0.67
+3-gram,4,SVM RBF OVO,0.59,0.77,0.67
+3-gram,0,SVM Linear OVO,0.86,0.89,0.86
+3-gram,1,SVM Linear OVO,0.84,0.88,0.85
+3-gram,2,SVM Linear OVO,0.85,0.88,0.85
+3-gram,3,SVM Linear OVO,0.85,0.88,0.85
+3-gram,4,SVM Linear OVO,0.87,0.89,0.86
+3-gram,0,SVM Linear OVR,0.86,0.88,0.86
+3-gram,1,SVM Linear OVR,0.84,0.88,0.85
+3-gram,2,SVM Linear OVR,0.85,0.88,0.85
+3-gram,3,SVM Linear OVR,0.85,0.88,0.85
+3-gram,4,SVM Linear OVR,0.87,0.89,0.86
+4-gram,0,SVM RBF OVO,0.59,0.77,0.67
+4-gram,1,SVM RBF OVO,0.59,0.77,0.67
+4-gram,2,SVM RBF OVO,0.59,0.77,0.67
+4-gram,3,SVM RBF OVO,0.59,0.77,0.67
+4-gram,4,SVM RBF OVO,0.59,0.77,0.67
+4-gram,0,SVM Linear OVO,0.86,0.89,0.86
+4-gram,1,SVM Linear OVO,0.85,0.88,0.85
+4-gram,2,SVM Linear OVO,0.86,0.89,0.85
+4-gram,3,SVM Linear OVO,0.85,0.88,0.84
+4-gram,4,SVM Linear OVO,0.88,0.89,0.86
+4-gram,0,SVM Linear OVR,0.86,0.88,0.86
+4-gram,1,SVM Linear OVR,0.84,0.88,0.85
+4-gram,2,SVM Linear OVR,0.86,0.88,0.85
+4-gram,3,SVM Linear OVR,0.85,0.88,0.84
+4-gram,4,SVM Linear OVR,0.88,0.89,0.86
+3 and 4-gram,0,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,1,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,2,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,3,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,4,SVM RBF OVO,0.xx,0.xx,0.xx
+3 and 4-gram,0,SVM Linear OVO,0.86,0.89,0.86
+3 and 4-gram,1,SVM Linear OVO,0.85,0.88,0.85
+3 and 4-gram,2,SVM Linear OVO,0.86,0.88,0.85
+3 and 4-gram,3,SVM Linear OVO,0.84,0.88,0.84
+3 and 4-gram,4,SVM Linear OVO,0.xx,0.xx,0.xx
+3 and 4-gram,0,SVM Linear OVR,0.86,0.88,0.86
+3 and 4-gram,1,SVM Linear OVR,0.84,0.88,0.85
+3 and 4-gram,2,SVM Linear OVR,0.85,0.88,0.85
+3 and 4-gram,3,SVM Linear OVR,0.84,0.88,0.84
+3 and 4-gram,4,SVM Linear OVR,0.xx,0.xx,0.xx
