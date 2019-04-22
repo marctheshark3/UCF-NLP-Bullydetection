@@ -7,7 +7,7 @@ import pandas as pd
 from datetime import datetime
 from preproc import translate_file
 from featrep import encode_tweets
-from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics
+from classify import CrossValidation, ann_train_and_evaluate, get_svm_metrics, NaiveB
 from sklearn import svm
 
 def main(input_file_name, options):
@@ -97,6 +97,7 @@ def main(input_file_name, options):
         #print("Poly OVO Accuracy for fold:", k_fold, "is:", m3)
         print("Linear OVR Accuracy for fold:", k_fold, "is:", m4)
 
+
         SVM_data.append(m1)
         SVM_data.append(m2)
         #SVM_data.append(m3)
@@ -113,21 +114,21 @@ def main(input_file_name, options):
 
 
 
-
     if options.bayes:
-      # TODO: Add Naive Bayes classification
-      pass
+      # Naive Bayes
+      bayesClassifier = NaiveB()
+      for k_fold in options.folds.split(','):
+        k_fold = int(k_fold)
+        trn_data, trn_labels, test_data, test_labels = crossval.get_sets(k_fold)
+        
+        bayesClassifier.reset()
+        bayesClassifier.fit(trn_data, trn_labels)
+        bayesClassifier.test(test_data, test_labels)
+        bayesClassifier.print_stats(display=True)
+      bayesClassifier.print_final_stats()
 
 
-class DoAllAction(argparse.Action):
-  def __init__(self, option_strings, dest, nargs=None, **kwargs):
-    if nargs is not None:
-      raise ValueError('nargs not allowed in DoAllAction')
-    super(DoAllAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
-  def __call__(self, parser, namespace, values, option_string=None):
-    setattr(namespace, 'ann', True)
-    setattr(namespace, 'svm', True)
-    setattr(namespace, 'bayes', True)
+
 
 class DoAllAction(argparse.Action):
   def __init__(self, option_strings, dest, nargs=None, **kwargs):

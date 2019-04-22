@@ -1,0 +1,64 @@
+ngram,fold,classifier,precision,recall,f1
+3-gram,0,ann,0.841909101,0.868913858,0.834346144
+3-gram,1,ann,0.85301417,0.868913858,0.82689917
+3-gram,2,ann,0.846905312,0.872055675,0.825227919
+3-gram,3,ann,0.807647337,0.857525442,0.819323807
+3-gram,4,ann,0.849233343,0.870915908,0.837364872
+4-gram,0,ann,0.84918951,0.878544676,0.844032687
+4-gram,1,ann,0.864010269,0.879079722,0.836945032
+4-gram,2,ann,0.862768484,0.879550321,0.836702745
+4-gram,3,ann,0.813987482,0.865024103,0.826618658
+4-gram,4,ann,0.857310397,0.880021425,0.847395352
+3 and 4-gram,0,ann,0.851260556,0.880684858,0.856767568
+3 and 4-gram,1,ann,0.842823929,0.87693954,0.848726767
+3 and 4-gram,2,ann,0.854394355,0.883832976,0.852234921
+3 and 4-gram,3,ann,0.845337075,0.880557043,0.846119034
+3 and 4-gram,4,ann,0.879428124,0.88966256,0.856182442
+3-gram,nan,naive bayes,0.433761315,0.697356351,0.46312079
+4-gram,nan,naive bayes,0.425781953,0.690677939,0.449249556
+3 and 4-gram,nan,naive bayes,0.434006415,0.697418324,0.463708548
+3-gram,0,SVM RBF OVO,0.59,0.77,0.67
+3-gram,1,SVM RBF OVO,0.59,0.77,0.67
+3-gram,2,SVM RBF OVO,0.59,0.77,0.67
+3-gram,3,SVM RBF OVO,0.59,0.77,0.67
+3-gram,4,SVM RBF OVO,0.59,0.77,0.67
+3-gram,0,SVM Linear OVO,0.86,0.89,0.86
+3-gram,1,SVM Linear OVO,0.84,0.88,0.85
+3-gram,2,SVM Linear OVO,0.85,0.88,0.85
+3-gram,3,SVM Linear OVO,0.85,0.88,0.85
+3-gram,4,SVM Linear OVO,0.87,0.89,0.86
+3-gram,0,SVM Linear OVR,0.86,0.88,0.86
+3-gram,1,SVM Linear OVR,0.84,0.88,0.85
+3-gram,2,SVM Linear OVR,0.85,0.88,0.85
+3-gram,3,SVM Linear OVR,0.85,0.88,0.85
+3-gram,4,SVM Linear OVR,0.87,0.89,0.86
+4-gram,0,SVM RBF OVO,0.59,0.77,0.67
+4-gram,1,SVM RBF OVO,0.59,0.77,0.67
+4-gram,2,SVM RBF OVO,0.59,0.77,0.67
+4-gram,3,SVM RBF OVO,0.59,0.77,0.67
+4-gram,4,SVM RBF OVO,0.59,0.77,0.67
+4-gram,0,SVM Linear OVO,0.86,0.89,0.86
+4-gram,1,SVM Linear OVO,0.85,0.88,0.85
+4-gram,2,SVM Linear OVO,0.86,0.89,0.85
+4-gram,3,SVM Linear OVO,0.85,0.88,0.84
+4-gram,4,SVM Linear OVO,0.88,0.89,0.86
+4-gram,0,SVM Linear OVR,0.86,0.88,0.86
+4-gram,1,SVM Linear OVR,0.84,0.88,0.85
+4-gram,2,SVM Linear OVR,0.86,0.88,0.85
+4-gram,3,SVM Linear OVR,0.85,0.88,0.84
+4-gram,4,SVM Linear OVR,0.88,0.89,0.86
+3 and 4-gram,0,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,1,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,2,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,3,SVM RBF OVO,0.59,0.77,0.67
+3 and 4-gram,4,SVM RBF OVO,0.xx,0.xx,0.xx
+3 and 4-gram,0,SVM Linear OVO,0.86,0.89,0.86
+3 and 4-gram,1,SVM Linear OVO,0.85,0.88,0.85
+3 and 4-gram,2,SVM Linear OVO,0.86,0.88,0.85
+3 and 4-gram,3,SVM Linear OVO,0.84,0.88,0.84
+3 and 4-gram,4,SVM Linear OVO,0.xx,0.xx,0.xx
+3 and 4-gram,0,SVM Linear OVR,0.86,0.88,0.86
+3 and 4-gram,1,SVM Linear OVR,0.84,0.88,0.85
+3 and 4-gram,2,SVM Linear OVR,0.85,0.88,0.85
+3 and 4-gram,3,SVM Linear OVR,0.84,0.88,0.84
+3 and 4-gram,4,SVM Linear OVR,0.xx,0.xx,0.xx

@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
-from sklearn.metrics import confusion_matrix
+import keras
+from sklearn.metrics import confusion_matrix, classification_report
 from . import Metrics
 
 
@@ -39,7 +39,6 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
   unique_class_count = np.max(np.unique(training_set_labels)) + 1
   one_hot_training_labels = np.zeros((training_sample_count, unique_class_count), np.int8)
   one_hot_training_labels[np.arange(training_sample_count), training_set_labels] = 1
-  print('one_hot_training_labels.shape={}'.format(one_hot_training_labels.shape))
   model = keras.Sequential()
   model.add(
     keras.layers.InputLayer(
@@ -68,18 +67,19 @@ def ann_train_and_evaluate(training_set_samples, training_set_labels, test_set_s
   )
   model.fit(training_set_samples, one_hot_training_labels, epochs=3)
   one_hot_predictions = model.predict(test_set_samples)
-  print('one_hot_predictions.shape={}'.format(one_hot_predictions.shape))
   predictions = np.argmax(one_hot_predictions, axis=1)
-  conf_matrix = confusion_matrix(test_set_labels, predictions, labels=[x for x in range(unique_class_count)])
-  precision_per_class = np.diag(conf_matrix) / np.sum(conf_matrix, axis=0)
-  recall_per_class = np.diag(conf_matrix) / np.sum(conf_matrix, axis=1)
-  overall_accuracy = np.sum(np.diag(conf_matrix)) / test_set_samples.shape[0]
-  metrics = {
-    'confusion_matrix': conf_matrix,
-    Metrics.PRECISION: precision_per_class,
-    Metrics.RECALL: recall_per_class,
-    Metrics.ACCURACY: overall_accuracy
-  }
-  xmit_conn.send(metrics)
+  conf_matrix = confusion_matrix(
+    test_set_labels,
+    predictions,
+    labels=[x for x in range(unique_class_count)]
+  )
+  metrics_report = classification_report(
+    test_set_labels,
+    predictions,
+    labels=[0, 1, 2, 3,],
+    target_names=['Not Bullying', 'Cultural', 'Sexual', 'Personal',],
+    output_dict=True
+  )
+  xmit_conn.send({'metrics': metrics_report, 'confusion_matrix': conf_matrix})
 
 # vim: set ts=2 sw=2 expandtab:
