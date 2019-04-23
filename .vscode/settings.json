@@ -46,6 +46,7 @@
         "Sweta",
         "YRBSS",
         "dropna",
+        "embeddings",
         "hstack",
         "ngram",
         "numpy",

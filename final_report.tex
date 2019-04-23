@@ -2,9 +2,12 @@
 \usepackage{color, xcolor, float, lscape, enumerate, graphicx, url, tabularx, multirow, xspace, hyperref}%times
 \usepackage[font=bf, skip=0pt]{caption}
 \usepackage[shortlabels,inline]{enumitem}
+\usepackage{mathtools}
 %\usepackage{titlesec}
 \usepackage[english]{babel}
 \DeclareMathOperator*{\argmax}{arg\,max}
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 
 \graphicspath{ {./images/} }
 
@@ -266,7 +269,7 @@ The \textit{Feature Representation} process transforms the pre-processed sample
 text into vector representations by identifying the unique 3-grams and 4-grams
 present in the input, then describing each text sample as a vector expressing
 the appearance frequency of these n-grams. N-grams here are the results of process
-of splitting the pre-processed chunks of text into the subsets of concequtive
+of splitting the pre-processed chunks of text into the subsets of consecutive
 words, where $n$ determines the size of a given subset. The process is able to 
 produce vector representations for each text sample based on:
 \begin{itemize}
@@ -276,7 +279,7 @@ produce vector representations for each text sample based on:
 \end{itemize}
 
 \subsection{Cross-Validation}\label{subsec:cross_validation}
-To establish the correctness of hyperparameters of the model as well as 
+To establish the correctness of hyper-parameters of the model as well as 
 evaluate the effectiveness of the system, it is decided to split the data set
 into chunks, such that every split generates two disjoint sub-data sets,
 which together span the original data set. Such a procedure is known as
@@ -413,6 +416,125 @@ with pre-determined probabilities of priors (due to the unbalanced data set).
 Different architectures were tested, resulting in higher accuracy, but since the
 main metric to be optimized is \textit{Recall}, Gaussian Na\"ive Bayes was
 chosen as the final model.
+
+\subsection{SVM Classifier}\label{subsec:svm_classifier}
+Support Vector Machines (SVM) are  a supervised learning model that can be
+applied for regression or classification. The SVM constructs what is called a
+hyper-plane or a set of hyper-planes to separate each of the given observations.
+The equation for a hyper-plane for p-dimension can be seen in Equation
+\ref{eq:svm_linear}.\par
+
+\noindent\hrulefill
+\begin{equation}
+  \label{eq:svm_linear}
+  \textbf{w}\textbf{x}_i + \textbf{b} = 0
+\end{equation}
+
+\noindent Where:
+\begin{description}
+  \item[$\textbf{w}$] - is the normal vector to the hyper-plane
+  \item[$\textbf{b}$] - is some bias
+  \item[$\textbf{x}_i$] - belongs to some observation and a p-dimensional vector
+\end{description}
+\noindent\hrulefill
+
+A linear SVM goal is to classify all training data, as seen in Equation
+\ref{eq:svm_linear_classify}
+
+\begin{equation}
+  \label{eq:svm_linear_classify}
+  \begin{aligned}
+    wx_i +b &\geq 1 \;if \; y_i=1 \; belongs\; to \;class \;1 \\
+    wx_i +b &\leq -1 \; if \; y_i=-1  \; belongs\; to \;class \;2 \\
+    y_i(wx_i+b) &\leq 1\; for \;all \;
+  \end{aligned}
+\end{equation}
+
+Then to maximize the margin M of the hyper-plane as shown in Equation
+\ref{eq:svm_margin}. where $ $\\
+
+\begin{equation}
+  \label{eq:svm_margin}
+  M = \frac{2}{\abs{w}}
+\end{equation}
+
+Thus minimizing Equation \ref{eq:svm_margin_minimize} subject to the stipulated
+conditions.
+
+\begin{equation}
+  \label{eq:svm_margin_minimize}
+  \begin{aligned}
+    \Phi(w) &= \frac{1}{2} w^{t}w \\
+    y_i &= (wx_i + b) \; for \;all \; i
+  \end{aligned}
+\end{equation}
+
+So we can test new classification points using Equation
+\ref{eq:svm_classify_test}.
+
+\begin{equation}
+  \label{eq:svm_classify_test}
+  f(x) = wX+b = \sum \alpha_i y_i x_i ^ T x_j
+\end{equation}
+
+Find $\alpha_1 ... \alpha_n$ such that the $ Q(\alpha) $ term in Equation
+\ref{eq:svm_optimize} is maximized, given the stipulated restrictions.
+
+\begin{equation}
+  \label{eq:svm_optimize}
+  \begin{aligned}
+    Q(\alpha) &= \sum \alpha_i - \frac{1}{2} \sum \alpha_i y_i x_i ^ T x_j + b \\
+    \sum \alpha_i y_i &= 0 \\
+    \alpha_i &\geq 0; for\; all\; \alpha_i
+  \end{aligned}
+\end{equation}
+
+SVMs are also subject to the kernel trick where we able to change the decision
+function and used for non-linear cases. Traditionally we have Linear, Polynomial
+of power p, and Gaussian or Radial Basis Function as kernel functions.
+Mathematically they can be represented as shown in Equation
+\ref{eq:svm_linear_kernel} for a Linear kernel, Equation
+\ref{eq:svm_poly_kernel} for a Polynomial kernel, and Equation
+\ref{eq:svm_rbf_kernel} for a Radial Basis Function kernel.
+
+\begin{equation}
+  \label{eq:svm_linear_kernel}
+  K(x_i,x_j) = x_i ^ T x_j
+\end{equation}
+
+\begin{equation}
+  \label{eq:svm_poly_kernel}
+  K(x_i,x_j) = (1+ x_i ^ T x_j )^p
+\end{equation}
+
+\begin{equation}
+  \label{eq:svm_rbf_kernel}
+  K(x_i,x_j) = exp(-\frac{\norm{x_i ^ T x_j }^2}{2\sigma^2})
+\end{equation}
+
+Thus modifying Equation \ref{eq:svm_classify_test} as seen in Equation
+\ref{eq:svm_classify_wkern}.\par
+
+\noindent\hrulefill
+\begin{equation}
+  \label{eq:svm_classify_wkern}
+  f(x) = \sum_{i=0} ^n \alpha_i y_i K(x_i,x_j)+b
+\end{equation}
+
+\noindent Where:
+\begin{description}
+  \item[$\textbf{x}_i$] - belongs to some observation and a p-dimensional vector
+  \item[$\sigma$] - is a free parameter
+\end{description}
+\noindent\hrulefill
+
+Another notion relative to SVM multi-class classification are training the SVM
+one vs one and one vs all. One vs one is will compare each class separately one
+by one and will create more boundaries between classes chooses the class with
+the most votes. This method has limitations in its computationally complexity
+since all classes are being compared to each other. One vs all takes one class
+and compares it to the the rest of the classes chooses the strongest prediction.
+\par
 
 \subsection{Classification Result}\label{subsec:classification_result}
 As output, the \textit{Classification and Evaluation} process creates the
@@ -645,23 +767,47 @@ seen in the Table \ref{tab:bayes_overall_results}.
 
 \subsection{SVM Classification Results}\label{subsec:svm_results}
 
-\todo{Introductory paragraph to SVM results}
+Using three different SVM model representations as classifiers on the given Data
+Set, the model was evaluated by comparing the calculated placement of the
+support vector or prediction vs its actual local or the correct class label. The
+evaluation process consisted of using a 5-fold cross-validation technique, where
+metrics were produced for each fold for each model used.  The main difference
+from each model was the kernel that was used, and the notion one vs one or one
+vs all. The three kernels used were Gaussian (Radial Basis Function), Linear One
+Vs One, Linear One Vs All. Details on the different feature representations are
+documented in Section 4.3, and they are identified in the results by the labels
+that appear in boldface prior to each  brief explanation The results of all
+three models are seen in Table \ref{tab:svm_overall_results}.\par
 
 \begin{table}[ht!]
   \centering
   \begin{tabular}{| l | r | r | r |}
     \hline
-    \textbf{Representation} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+    \textbf{Configuration} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
     \hline\hline
-    \textbf{3-gram} & 0.0 & 0.0 & 0.0 \\
+    RBF OVO(3-gram) & 0.59 & 0.77 & 0.67 \\
     \hline
-    \textbf{4-gram} & 0.0 & 0.0 & 0.0 \\
+    Linear OVO(3-gram) & 0.854 & 0.884 & 0.854 \\
     \hline
-    \textbf{3 and 4-gram} & 0.0 & 0.0 & 0.0 \\
+    Linear OVR(3-gram) & 0.854 & 0.882 & 0.854 \\
+    \hline
+    RBF OVO(4-gram) & 0.59 & 0.77 & 0.67 \\
+    \hline
+    Linear OVO(4-gram) & 0.86 & 0.886 & 0.852 \\
+    \hline
+    Linear OVR(4-gram) & 0.858 & 0.882 & 0.852 \\
+    \hline
+    RBF OVO(3 and 4-gram) & 0.59 & 0.77 & 0.67 \\
+    \hline
+    Linear OVO(3 and 4-gram) & 0.858 & 0.884 & 0.852 \\
+    \hline
+    Linear OVR(3 and 4-gram) & 0.854 & 0.882 & 0.852 \\
     \hline
   \end{tabular}
   \caption{The overall weighted average of the performance metrics derived from
-  SVM classification runs on each feature representation of the data.}
+  SVM classification runs on each feature representation of the data. Among the
+  configurations, ``RBF'' stands for ``Radial Basis Function,'' ``OVO'' stands
+  for ``One vs One,'' and ``OVR'' stands for ``One vs Rest.''}
   \label{tab:svm_overall_results}
 \end{table}
 
@@ -686,8 +832,11 @@ performer.
     \textbf{Class Label} & \textbf{Count} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
     \hline\hline
     \textbf{No Bullying} & 1,440 & 0.880 & 0.993 & 0.933 \\
+    \hline
     \textbf{Sexual} & 105 & 0.981 & 0.981 & 0.981 \\
+    \hline
     \textbf{Cultural} & 104 & 1.0 & 0.942 & 0.970 \\
+    \hline
     \textbf{Personal} & 218 & 0.769 & 0.138 & 0.233 \\
     \hline
   \end{tabular}
@@ -724,7 +873,7 @@ Section \ref{subsec:ann_discussion}, the classifier finds it hard to differentia
 between \textit{No Bullying} and \textit{Personal Attacks} classes, while perfectly 
 labeling \textit{Sexual Harassment} and \textit{Cultural Harassment}. This might be
 because the \textit{Personal Attacks} section is too broad and contain many different
-embeddings which overlap with \textit{No Bullying}, whike other sections are more refined
+embeddings which overlap with \textit{No Bullying}, while other sections are more refined
 and have specific n-grams which trigger the classifier. The confusion matrix for \textbf{3-gram}
 representation is shown in Table \ref{tab:bayes_confusion_matrix}.
 
@@ -732,23 +881,42 @@ representation is shown in Table \ref{tab:bayes_confusion_matrix}.
   \centering
   \begin{tabular}{| l | r | r | r | r |}
     \hline
-    \textbf{Class Label} & \textbf{No Bullying} & \textbf{Cultural} & \textbf{Sexual} & \textbf{Personal} \\
+    \textbf{Class Label} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\
     \hline\hline
-    \textbf{No Bullying} & 740 & 120 & 305 & 275 \\
-    \textbf{Cultural} & 0 & 104 & 0 & 0 \\
-    \textbf{Sexual} & 0 & 0 & 105 & 0 \\
-    \textbf{Personal} & 90 & 20 & 53 & 55 \\
+    \textbf{0} & 740 & 120 & 305 & 275 \\
+    \hline
+    \textbf{1} & 0 & 104 & 0 & 0 \\
+    \hline
+    \textbf{2} & 0 & 0 & 105 & 0 \\
+    \hline
+    \textbf{3} & 90 & 20 & 53 & 55 \\
     \hline
   \end{tabular}
   \caption{Na\"ive Bayes Confusion Matrix for ``3 -gram'' representation,
-  averaged over 5-fold cross-validation}
+  averaged over 5-fold cross-validation. The class labels were replaced by their
+  numeric counterparts due to space considerations. Label (0) is
+  ``No Bullying, '' label (1) is ``Sexual Harassment,'' label (2) is
+  ``Cultural Harassment,'' and label (3) is ``Personal Attacks.''}
   \label{tab:bayes_confusion_matrix}
 \end{table}
 
 
 \subsection{SVM Classification}\label{subsec:svm_discussion}
 
-\todo{Add any insights gleaned from SVM results}
+The SVM models depict a trend known when using SVM, where the decision boundary
+is non-linear or linear. Looking at the results it is clear that the decision
+boundary is leaning on the linear side as the RBF kernel model only achieved a
+precision of 59 percent. The same model had a recall was 0.77, which is below
+the goal of 0.87 achieved by Agrawal \cite{agrawal2018deep}.  Of the two linear
+models the main difference in performance was not by much, yet the one vs one
+approach had the higher precision, and recall values. This is due to the one vs
+one model having more support vectors to compare against, at the cost of
+computation. While the one vs all was not far behind this model was certainly
+the most streamlines in terms of time since it has far less support vectors to
+compare. Both linear models slightly surpassed the expected results again
+achieved by Argrawal \cite{agrawal2018deep}. Due to two of the three SVM models
+were using one vs one the calculation time was immense as it took over a week to
+calculate.\par
 
 \subsection{Statistical Significance Test}\label{subsec:stat_sig_discussion}
 
@@ -759,7 +927,7 @@ high/low chart depiction of the numerical data is shown in Figure
 
 \begin{table}
   \centering
-  \begin{tabular}{| c | r | r | r |}
+  \begin{tabular}{| l | r | r | r |}
     \hline
     \textbf{Combination} & \textbf{Low} & \textbf{High} & \textbf{Actual} \\
     \hline\hline
@@ -775,21 +943,35 @@ high/low chart depiction of the numerical data is shown in Figure
     \hline
     Na\"ive Bayes 3 and 4-gram & 0.688 & 0.707 & 0.697 \\
     \hline
-    SVM 3-gram & 0.0 & 0.0 & 0.0 \\
+    SVM RBF OVO(3-gram) & 0.761 & 0.779 & 0.77 \\
     \hline
-    SVM 4-gram & 0.0 & 0.0 & 0.0 \\
+    SVM Linear OVO(3-gram) & 0.878 & 0.890 & 0.884 \\
     \hline
-    SVM 3 and 4-gram & 0.0 & 0.0 & 0.0 \\
+    SVM Linear OVR(3-gram) & 0.875 & 0.888 & 0.882 \\
+    \hline
+    SVM RBF OVO(4-gram) & 0.761 & 0.779 & 0.77 \\
+    \hline
+    SVM Linear OVO(4-gram) & 0.880 & 0.892 & 0.886 \\
+    \hline
+    SVM Linear OVR(4-gram) & 0.875 & 0.889 & 0.882 \\
+    \hline
+    SVM RBF OVO(3 and 4-gram) & 0.761 & 0.779 & 0.77 \\
+    \hline
+    SVM Linear OVO(3 and 4-gram) & 0.878 & 0.890 & 0.884 \\
+    \hline
+    SVM Linear OVR(3 and 4-gram) & 0.875 & 0.889 & 0.882 \\
     \hline
   \end{tabular}
   \caption{95\% confidence interval on the Recall metric for all classifier and
-  feature representation combinations implemented in this system.}
+  feature representation combinations implemented in this system. Among the SVM
+  classifiers, the designation ``OVO'' stands for ``One vs One,'' whereas
+  ``OVR'' stands for ``One vs the Rest.''}
   \label{tab:stat_sig}
 \end{table}
 
-\begin{figure*}[h]
+\begin{figure*}[ht!]
   \centering
-  \includegraphics[width=.9\textwidth]{statsig_highlow.png}
+  \includegraphics[width=.9\textwidth]{statsig_highlow.pdf}
   \caption{High/Low chart depicting the 95\% confidence interval for each
   classifier and feature representation combination implemented in this system.}
   \label{fig:stat_sig_highlow}
@@ -803,13 +985,26 @@ all classification runs that used a Na\"ive Bayes classifier. The
 worst ANN performer and the upper bound of the best Na\"ive Bayes performer is
 $0.154$, whereas the separation between the upper bound of the worst
 ANN performer and the lower bound of the best ANN performer is merely $0.001$.
+\par
 
 Among the ANN classifiers, only the comparison between the ``ANN 3-gram'' and
 ``ANN 3 and 4-gram'' classification runs rejects the statistical null hypothesis
 $H_0: \hat{r}_0 = \hat{r}_1$ since the upper bound of the 95\% confidence
 interval of ``ANN 3-gram'' ($0.875$) is below the lower bound of the confidence
 interval of ``ANN 3 and 4-gram'' ($0.876$), thus accepting the statistical
-alternative hypothesis $H_a: \hat{r}_0 \neq \hat{r}_1$.
+alternative hypothesis $H_a: \hat{r}_0 \neq \hat{r}_1$.\par
+
+Comparing the ANN classifier with the variety of SVM classifier configurations
+yields more interesting results, however. Several of the SVM variations either
+matched or slightly out-performed the best ANN classifier. It is also
+interesting to see that SVM classifiers using a Radial Basis Function (RBF)
+kernel actually performed significantly worse when compared against their Linear
+kernel counterparts. Another interesting insight into the SVM classification
+runs is that feature representation did not have as profound an impact as it
+did with either ANN or Na\"ive Bayes. Based on the 95\% confidence intervals,
+there is no significant difference between any of the SVM Linear kernel
+classifiers and the best non-SVM classifier (ANN using ``3 and 4-gram''
+feature representation).\par
 
 \section{Work Distribution}\label{sec:plan_roles}
 The proof-of-concept implementation exercise is divided into seven (7)
