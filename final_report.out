@@ -1,0 +1,35 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Problem Statement}{}% 2
+\BOOKMARK [1][-]{section.3}{Related Work}{}% 3
+\BOOKMARK [1][-]{section.4}{Methodology}{}% 4
+\BOOKMARK [2][-]{subsection.4.1}{Pre-processing}{section.4}% 5
+\BOOKMARK [2][-]{subsection.4.2}{Processed Input}{section.4}% 6
+\BOOKMARK [2][-]{subsection.4.3}{Feature Representation}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.4}{Cross-Validation}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.5}{Classification and Evaluation}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.6}{ANN Classifier}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.7}{Na\357ve Bayes Classifier}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.8}{SVM Classifier}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.9}{Classification Result}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.10}{Statistical Significance}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.11}{Significance Result}{section.4}% 15
+\BOOKMARK [1][-]{section.5}{Risk Management}{}% 16
+\BOOKMARK [1][-]{section.6}{Evaluation}{}% 17
+\BOOKMARK [2][-]{subsection.6.1}{Data Set}{section.6}% 18
+\BOOKMARK [2][-]{subsection.6.2}{ANN Classification Results}{section.6}% 19
+\BOOKMARK [2][-]{subsection.6.3}{Na\357ve Bayes Classification Results}{section.6}% 20
+\BOOKMARK [2][-]{subsection.6.4}{SVM Classification Results}{section.6}% 21
+\BOOKMARK [1][-]{section.7}{Discussion}{}% 22
+\BOOKMARK [2][-]{subsection.7.1}{ANN Classification}{section.7}% 23
+\BOOKMARK [2][-]{subsection.7.2}{Na\357ve Bayes Classification}{section.7}% 24
+\BOOKMARK [2][-]{subsection.7.3}{SVM Classification}{section.7}% 25
+\BOOKMARK [2][-]{subsection.7.4}{Statistical Significance Test}{section.7}% 26
+\BOOKMARK [1][-]{section.8}{Work Distribution}{}% 27
+\BOOKMARK [2][-]{subsection.8.1}{Data Set Labeling}{section.8}% 28
+\BOOKMARK [2][-]{subsection.8.2}{Text Tokenization}{section.8}% 29
+\BOOKMARK [2][-]{subsection.8.3}{Text Embedding}{section.8}% 30
+\BOOKMARK [2][-]{subsection.8.4}{Cross-Validation}{section.8}% 31
+\BOOKMARK [2][-]{subsection.8.5}{Classifiers}{section.8}% 32
+\BOOKMARK [2][-]{subsection.8.6}{Presentation}{section.8}% 33
+\BOOKMARK [2][-]{subsection.8.7}{Final Report}{section.8}% 34
+\BOOKMARK [1][-]{section.9}{Conclusion}{}% 35

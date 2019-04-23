@@ -194,8 +194,7 @@ item):
   \begin{itemize}
     \item ANN classification - A three-layer (one input, one hidden, and
     one output) Artificial Neuron Network (ANN).
-    \item SVM classification - A Radial Basis Function (RBF) Support Vector
-    Machine.
+    \item SVM classification - A Support Vector Machine using a Radial Basis Function (RBF) Kernel and Linear Kernel.
     \item Bayes classification - A Na\"{i}ve Bayes classifier.
   \end{itemize}
   \item \textbf{Statistical Significance:} Determine, via statistical tests,
@@ -529,10 +528,10 @@ Thus modifying Equation \ref{eq:svm_classify_test} as seen in Equation
 \noindent\hrulefill
 
 Another notion relative to SVM multi-class classification are training the SVM
-one vs one and one vs all. One vs one is will compare each class separately one
+one vs one and one vs rest. One vs one is will compare each class separately one
 by one and will create more boundaries between classes chooses the class with
 the most votes. This method has limitations in its computationally complexity
-since all classes are being compared to each other. One vs all takes one class
+since all classes are being compared to each other. One vs rest takes one class
 and compares it to the the rest of the classes chooses the strongest prediction.
 \par
 
@@ -773,8 +772,8 @@ support vector or prediction vs its actual local or the correct class label. The
 evaluation process consisted of using a 5-fold cross-validation technique, where
 metrics were produced for each fold for each model used.  The main difference
 from each model was the kernel that was used, and the notion one vs one or one
-vs all. The three kernels used were Gaussian (Radial Basis Function), Linear One
-Vs One, Linear One Vs All. Details on the different feature representations are
+vs rest. The three kernels used were Gaussian (Radial Basis Function), Linear One
+Vs One, Linear One Vs Rest. Details on the different feature representations are
 documented in Section 4.3, and they are identified in the results by the labels
 that appear in boldface prior to each  brief explanation The results of all
 three models are seen in Table \ref{tab:svm_overall_results}.\par
@@ -911,7 +910,7 @@ the goal of 0.87 achieved by Agrawal \cite{agrawal2018deep}.  Of the two linear
 models the main difference in performance was not by much, yet the one vs one
 approach had the higher precision, and recall values. This is due to the one vs
 one model having more support vectors to compare against, at the cost of
-computation. While the one vs all was not far behind this model was certainly
+computation. While the one vs rest was not far behind this model was certainly
 the most streamlines in terms of time since it has far less support vectors to
 compare. Both linear models slightly surpassed the expected results again
 achieved by Argrawal \cite{agrawal2018deep}. Due to two of the three SVM models
